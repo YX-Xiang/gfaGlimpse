@@ -6,7 +6,6 @@
 #include <stack>
 #include <unordered_map>
 #include <vector>
-#include <iostream>
 
 
 #include "graph.h"
@@ -25,6 +24,7 @@ class Connectivity {
         void findWCC(const DiGraph&);
         void findSCC(const DiGraph&);
         void SCC2Subgraph(const DiGraph&, std::vector <DiGraph>&);
+        void SCC2Subgraph(const BiedgedGraph&, std::vector <BiedgedGraph>&);
         void print2File(const std::string&);
 
     private:

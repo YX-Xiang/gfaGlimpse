@@ -4,7 +4,10 @@
 
 #include <unordered_map>
 #include <iostream>
+#include <utility>
 #include <vector>
+#include <stack>
+#include <algorithm>
 
 
 #include "graph.h"
@@ -24,8 +27,6 @@ class Edge {
     private:
         int loopCount;
         std::unordered_map <long long, int> loopLen;
-        std::vector <int> inDegree, outDegree, degree;
-        std::vector <int> deadEndList;
 };
 
 
@@ -38,8 +39,15 @@ class Cycle {
         Cycle();
         ~Cycle();
 
-        void statCycle(const DiGraph&);
+        void work(std::vector <DiGraph>&);
+        void work(std::vector <BiedgedGraph>&);
         void print2File(const std::string&);
+
+    private:
+        void statCycle(const DiGraph&);
+        void statCycle(const BiedgedGraph&);
+        void findCycleInDirected(int, const std::vector <int>&, const std::vector <std::set <int> >&);
+        void findCycleInBiedged(int, const std::vector <int>&, const std::vector <std::set <std::pair<int, int> > >&);
 };
 
 #endif

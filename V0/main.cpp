@@ -1,6 +1,5 @@
-#include <algorithm>
 #include <cstring>
-#include <iostream>
+#include <ostream>
 
 #include "graph.h"
 #include "gfa.h"
@@ -17,7 +16,7 @@ void showUsage(std::string name) {
 		<< "\t-h,\t\tShow this help message\n"
 		<< "\t-m,\t\tChoose the different mode (cycle(default)/path/scc/dominator/check)"
 		<< "\t-t,\t\tThe number of threads (default: 1)\n"
-		<< "\t-o,\t\tPath to output file (containing strongly connected component point distributions and cycle length distributions)\n"
+		<< "\t-o,\t\tPath to output file (containing temporary file)\n"
 		<< "\t-f,\t\tFasta files to be compared\n"
 		<< std::endl;
 }
@@ -37,7 +36,7 @@ int main(int argc, char* argv[]) {
     std::string inputThread = "";
     std::string inputMode = "cycle";
     std::string inputGfaFile = "";
-	std::string outputFile = "";
+	std::string outputPath = "";
     int threads = 1;
 
     for (int i = 1; i < argc; ++ i) {
@@ -65,7 +64,7 @@ int main(int argc, char* argv[]) {
 			}  
 		} else if (strcmp(argv[i], "-o") == 0) {
 			if (i + 1 < argc) {
-				outputFile = argv[++i];
+				outputPath = argv[++i];
 			} else {
 				std::cerr << "-o option requires one argument." << std::endl;
 				return 1;
@@ -76,66 +75,62 @@ int main(int argc, char* argv[]) {
     }
 
     DiGraph diGraph;
-    BiedgedGraph biedgedGraph;
+    BiedgedGraph biedgedGraph, diBiedgedGraph;
     Gfa gfa;
-    gfa.gfa2Graph(inputGfaFile, diGraph, biedgedGraph);
+    gfa.gfa2Graph(inputGfaFile, diGraph, biedgedGraph, diBiedgedGraph);
+	// diGraph.print();
+	// biedgedGraph.print();
+	// diBiedgedGraph.print();
 
-	Vertex diVertex, biVertex;
+	Vertex diVertex, biVertex, diBiVertex;
 	diVertex.statVertex(diGraph);
 	biVertex.statVertex(biedgedGraph);
-	diVertex.print2File(outputFile);
-	biVertex.print2File(outputFile);
+	diBiVertex.statVertex(diBiedgedGraph);
+	// diVertex.print2File(outputPath);
+	// biVertex.print2File(outputPath);
+	// diBiVertex.print2File(outputPath);
 
-	Edge diEdge, biEdge;
+	Edge diEdge, biEdge, diBiEdge;
 	diEdge.stat(diGraph);
 	biEdge.stat(biedgedGraph);
-	// diEdge.print2File(outputFile);
-	// biEdge.print2File(outputFile);
+	diBiEdge.stat(diBiedgedGraph);
+	// diEdge.print2File(outputPath);
+	// biEdge.print2File(outputPath);
+	// diBiEdge.print2File(outputPath);
+
 
 	Connectivity diConnectivity = Connectivity(diGraph.vertexNumber);
+	std::vector <DiGraph> diSubgraphList = std::vector <DiGraph>();
 	diConnectivity.edgeCompress(diGraph);
 	diConnectivity.findSCC(diGraph);
-
-	std::vector <DiGraph> subgraphList = std::vector <DiGraph>();
-	diConnectivity.SCC2Subgraph(diGraph, subgraphList);
-	/*for (auto subG: subgraphList) {
-		for (auto v: subG.vertexVal) {
-			std::cout << "Vertexs:\t";
-			std::cout << v.first << ": " << v.second << std::endl;
-			std::cout << "Edges:\t";
-			for (auto e: subG.edge[v.first]) {
-				std::cout << v.first << "->" <<  e << "; ";
-			}
-			std::cout << std::endl;
-		}
-		std::cout << std::endl;
-	}*/
-
+	diConnectivity.SCC2Subgraph(diGraph, diSubgraphList);
 
 	// 只需要在上一步分离出的SCC中统计cycle相关指标，大大降低时间复杂度
-	Cycle total;
-	for (auto subgraph: subgraphList) {
-		Cycle diCycle;
-		diCycle.statCycle(subgraph);
-		total.cycleCount += diCycle.cycleCount;
-		if (diCycle.cycleCount) {
-			total.minCycleLen = std::min(total.minCycleLen, diCycle.minCycleLen);
-		}
-		for (auto item: diCycle.cycleLen) {
-			total.cycleLen[item.first] += item.second;
-		}
-	}
-	// total.print2File(outputFile);
+	Cycle diTotal;
+	diTotal.work(diSubgraphList);
+	diTotal.print2File(outputPath);
+	
+	Connectivity diBiConnectivity = Connectivity(diBiedgedGraph.vertexNumber);
+	std::vector <BiedgedGraph> diBiSubgraphList = std::vector <BiedgedGraph>();
+	diBiConnectivity.findComponent(diBiedgedGraph);
+	diBiConnectivity.SCC2Subgraph(diBiedgedGraph, diBiSubgraphList);
+
+	Cycle diBiTotal;
+	diBiTotal.work(diBiSubgraphList);
+	diBiTotal.print2File(outputPath);
 
 	Coverage diCoverage = Coverage(gfa.path);
 	Coverage biCoverage = Coverage(gfa.path);
 	diCoverage.statCoverage(diGraph);
 	biCoverage.statCoverage(biedgedGraph);
 
-	Growth diGrowth = Growth(gfa.path);
-	Growth biGrowth = Growth(gfa.path);
-	diGrowth.statGrowth(diGraph);
-	biGrowth.statGrowth(biedgedGraph);
+	// ···TODO··· 先暂时放弃了，当个快乐的调包侠o(*￣▽￣*)ブ
+	// Growth diGrowth = Growth(gfa.path);
+	// Growth biGrowth = Growth(gfa.path);
+	// diGrowth.statGrowth(diGraph);
+	// biGrowth.statGrowth(biedgedGraph);
+	Growth growth = Growth(outputPath);
+	// growth.statGrowth(inputGfaFile);
 
 	Bubble diBubble, biBubble;
 	diBubble.findBubble(diGraph);

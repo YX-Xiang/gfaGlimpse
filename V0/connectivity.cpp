@@ -147,10 +147,10 @@ void Connectivity::findSCC(const DiGraph& diGraph) {
 
 void Connectivity::SCC2Subgraph(const DiGraph& diGraph, std::vector <DiGraph>& subgraphList) {
     for (auto SCC: sccList) {
-        // if (SCC.size() == 1) continue;
+        if (SCC.size() == 1) continue;
 
         DiGraph subGraph = DiGraph();
-        subGraph.edge.push_back(std::set <long long> ());
+        subGraph.edge = std::vector <std::set <long long> > (SCC.size() + 1, std::set <long long>());
         std::map <int, int> nodeId = std::map <int, int>();
         int id = 0;
 
@@ -162,7 +162,6 @@ void Connectivity::SCC2Subgraph(const DiGraph& diGraph, std::vector <DiGraph>& s
                     subGraph.vertexVal[nodeId[initNode]] = diGraph.vertexVal.at(initNode);
                     subGraph.map2RawGraph[nodeId[initNode]] = initNode;
                 }
-                subGraph.edge.push_back(std::set <long long> ());
 
                 for (auto nxtNode: diGraph.edge[initNode]) {
                     long long nxtNodeMap = reVertexMap[nxtNode];
@@ -174,6 +173,43 @@ void Connectivity::SCC2Subgraph(const DiGraph& diGraph, std::vector <DiGraph>& s
                         }
 
                         subGraph.edge[nodeId[initNode]].insert(nodeId[nxtNode]);
+                    }
+                }
+            }
+        }
+        subGraph.vertexNumber = id;
+        subgraphList.push_back(subGraph);
+    }
+}
+
+
+void Connectivity::SCC2Subgraph(const BiedgedGraph& biedgedGraph, std::vector <BiedgedGraph>& subgraphList) {
+    for (auto SCC: sccList) {
+        if (SCC.size() == 1) continue;
+
+        BiedgedGraph subGraph = BiedgedGraph();
+        subGraph.edge = std::vector <std::set <Biedge> > (SCC.size() + 1, std::set <Biedge>());
+        std::map <int, int> nodeId = std::map <int, int>();
+        int id = 0;
+
+        for (auto node: SCC) {
+            long long initNode = node;
+            if (! biedgedGraph.edge[initNode].empty()) {
+                if (! nodeId.count(initNode)) {
+                    nodeId[initNode] = ++ id;
+                    subGraph.map2RawGraph[nodeId[initNode]] = initNode;
+                }
+
+                for (auto nxt: biedgedGraph.edge[initNode]) {
+                    int nxtNode = nxt.to;
+                    if (sccNum[nxtNode] == sccNum[node]) {
+                        if (! nodeId.count(nxtNode)) {
+                            nodeId[nxtNode] = ++ id;
+                            subGraph.map2RawGraph[nodeId[nxtNode]] = nxtNode;
+                        }
+
+                        Biedge newEdge = Biedge(nodeId[nxtNode], nxt.value);
+                        subGraph.edge[nodeId[initNode]].insert(newEdge);
                     }
                 }
             }

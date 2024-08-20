@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <set>
+#include <iostream>
 
 
 class Graph {
@@ -25,6 +26,8 @@ class DiGraph: public Graph {
 
         DiGraph();
         ~DiGraph();
+
+        void print();
 };
 
 
@@ -33,6 +36,7 @@ class Biedge {
         int to, value;
 
         Biedge();
+        Biedge(int, int);
         ~Biedge();
 
         bool operator<(const Biedge&) const;
@@ -42,10 +46,12 @@ class Biedge {
 class BiedgedGraph: public Graph {
     public:
         std::vector <std::set <Biedge> > edge;
-        // ！！！后期需要加度数，注意区分bidirected和biedged
-
+        // 区分biedged和directed biedged
+        bool directed;
+        
         BiedgedGraph();
         ~BiedgedGraph();
+        void print();
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "graph.h"
+#include <iostream>
 
 
 Graph::Graph() {
@@ -21,8 +22,26 @@ DiGraph::DiGraph() {
 DiGraph::~DiGraph() {}
 
 
+void DiGraph::print() {
+    std::cout << "Edges in the digraph:\n";
+    int vertexMaxNumber = edge.size();
+    for(int bid = 1; bid < vertexMaxNumber; bid ++) {
+        for(auto eid: edge[bid]) {
+            std::cout << bid << ":" << vertexVal.at(bid) << " -> " 
+                << eid << ":" << vertexVal.at(eid) << '\n';
+        }
+    }
+}
+
+
 Biedge::Biedge() {
     value = 0;
+}
+
+
+Biedge::Biedge(int nTo, int nValue) {
+    to = nTo;
+    value = nValue;
 }
 
 
@@ -43,3 +62,14 @@ BiedgedGraph::BiedgedGraph() {
 
 
 BiedgedGraph::~BiedgedGraph() {}
+
+
+void BiedgedGraph::print() {
+    std::cout << "Edges in the bigraph:\n";
+    int vertexMaxNumber = edge.size();
+    for(int bid = 1; bid < vertexMaxNumber; bid ++) {
+        for(auto eid: edge[bid]) {
+            std::cout << bid << " -> " << eid.to << ": " << eid.value << '\n';
+        }
+    }
+}
