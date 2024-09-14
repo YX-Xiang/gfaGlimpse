@@ -165,6 +165,12 @@ void Bubble::findBubble(const BiedgedGraph& biedgedGraph) {
         bfs((i+1)/2,1-i&1,biedgedGraph);
     }
 
+	// int mxdegree=0;
+	// for(int i=1;i<=n*2;i++){
+	// 	mxdegree=std::max(mxdegree,(int)biedgedGraph.edge[i].size());
+	// }
+	// std::cerr<<"maxdegree:"<<mxdegree<<std::endl;
+
 	sort(Bubbles.begin(),Bubbles.end());
 
 	long long maxdp=0,maxdpp=0;
@@ -305,7 +311,7 @@ void Bubble::bfs(int s,int direction,const BiedgedGraph& biedgedGraph,int is_dib
 				return ;
 			}
 			std::vector <int> to_parent;
-			for(auto &[fa,faV]:biedgedGraph.edge[to]) if(faV==0){
+			for(auto &[fa,faV]:biedgedGraph.redge[to]) if(faV==0){
                 // std::cerr<<"fa: "<<to<<" "<<fa<<std::endl;
 				to_parent.push_back((fa+1)/2);
 			}
