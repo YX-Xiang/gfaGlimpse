@@ -112,17 +112,17 @@ int main(int argc, char* argv[]) {
 	
 	Connectivity diBiConnectivity = Connectivity(diBiedgedGraph.vertexNumber);
 	std::vector <BiedgedGraph> diBiSubgraphList = std::vector <BiedgedGraph>();
-	diBiConnectivity.findComponent(diBiedgedGraph);
-	diBiConnectivity.SCC2Subgraph(diBiedgedGraph, diBiSubgraphList);
+	// diBiConnectivity.findComponent(diBiedgedGraph);
+	// diBiConnectivity.SCC2Subgraph(diBiedgedGraph, diBiSubgraphList);
 
 	Cycle diBiTotal;
-	diBiTotal.work(diBiSubgraphList);
-	diBiTotal.print2File(outputPath);
+	// diBiTotal.work(diBiSubgraphList);
+	// diBiTotal.print2File(outputPath);
 
 	Coverage diCoverage = Coverage(gfa.path);
 	Coverage biCoverage = Coverage(gfa.path);
-	diCoverage.statCoverage(diGraph);
-	biCoverage.statCoverage(biedgedGraph);
+	// diCoverage.statCoverage(diGraph);
+	// biCoverage.statCoverage(biedgedGraph);
 
 	// ···TODO··· 先暂时放弃了，当个快乐的调包侠o(*￣▽￣*)ブ
 	// Growth diGrowth = Growth(gfa.path);
@@ -132,9 +132,9 @@ int main(int argc, char* argv[]) {
 	Growth growth = Growth(outputPath);
 	// growth.statGrowth(inputGfaFile);
 
-	Bubble diBubble, biBubble;
-	diBubble.findBubble(diGraph);
-	biBubble.findBubble(biedgedGraph);
+	// Bubble diBubble, biBubble;
+	// diBubble.findBubble(diGraph);
+	// biBubble.findBubble(biedgedGraph);
 
     return 0;
 }

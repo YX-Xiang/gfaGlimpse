@@ -305,7 +305,7 @@ void Bubble::bfs(int s,int direction,const BiedgedGraph& biedgedGraph,int is_dib
 				return ;
 			}
 			std::vector <int> to_parent;
-			for(auto &[fa,faV]:biedgedGraph.redge[to]) if(faV==0){
+			for(auto &[fa,faV]:biedgedGraph.edge[to]) if(faV==0){
                 // std::cerr<<"fa: "<<to<<" "<<fa<<std::endl;
 				to_parent.push_back((fa+1)/2);
 			}

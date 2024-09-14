@@ -1,5 +1,8 @@
 #include "edge.h"
+#include <queue>
+#include <unordered_map>
 #include <utility>
+#include <vector>
 
 
 Edge::Edge() {
@@ -178,6 +181,10 @@ void Cycle::findCycleInDirected(int startVertex, const std::vector <int>& vertex
 
     // 存储每个点访问邻接边的断点
     std::vector <int> visited = std::vector <int> (vertexNumber, startVertex);
+    // 标记每个点是否被至少一个cycle包含
+    std::vector <int> boolCycle = std::vector <int> (vertexNumber, 0);
+    // 标记每个点后继会出现的死胡同
+    std::vector <std::set <int> > blockList = std::vector <std::set <int> > (vertexNumber, std::set <int> ());
 
     while (! dfsStack.empty()) {
         int nowNode = dfsStack.top();
@@ -198,6 +205,10 @@ void Cycle::findCycleInDirected(int startVertex, const std::vector <int>& vertex
                 cycleLen[totalLength] ++;
                 minCycleLen = std::min(minCycleLen, totalLength);
 
+                for(auto p: path) {
+                    boolCycle[p] = 1;
+                }
+
             } else if (! blocked[nxtNode]) {
                 dfsStack.push(nxtNode);
                 path.push_back(nxtNode);
@@ -209,17 +220,44 @@ void Cycle::findCycleInDirected(int startVertex, const std::vector <int>& vertex
             }
         }
 
+        // When no extension from vertex nowNode is possible
         if (found) {
-            int finished = path.back();
             path.pop_back();
             dfsStack.pop();
-            blocked[finished] = 0;
+
+            // If no cycle containing nowNode has been found, 
+            // then nowNode stays blocked and is added to the list blockList[adjacentNode] for each adjacentNode for which an edge (nowNode, adjacentNode) exists.
+            if (! boolCycle[nowNode]) {
+                for(auto adjacentNode: edge[nowNode]) {
+                    blockList[adjacentNode].insert(nowNode);
+                }
+            } else {
+            // If a cycle containing nowNode has been found,
+            // then a procedure UNBLOCK(nowNode) is called, which 'unblocks' nowNode and recursively calls UNBLOCK(adjacentNode) for each adjacentNode \in blockList[adjacentNode].
+                std::queue <int> unblockList;
+                std::unordered_map <int, int> queueVisit;
+                unblockList.push(nowNode);
+                queueVisit[nowNode] = 1;
+                while (! unblockList.empty()) {
+                    int unblockElement = unblockList.front();
+                    unblockList.pop();
+
+                    blocked[unblockElement] = 0;
+                    for (auto adjacentNode: blockList[unblockElement]) {
+                        if (! queueVisit[adjacentNode]) {
+                            queueVisit[adjacentNode] = 1;
+                            unblockList.push(adjacentNode);
+                        }
+                    }
+                }
+                boolCycle[nowNode] = 0;
+            }
 
             if (! path.empty()) {
                 int preFinished = path.back();
 
-                totalLength -= vertexVal[finished];
-                visited[finished] = startVertex;
+                totalLength -= vertexVal[nowNode];
+                visited[nowNode] = startVertex + 1;
             }
         }
     }
