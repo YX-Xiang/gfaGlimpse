@@ -46,6 +46,7 @@ class Biedge {
 class BiedgedGraph: public Graph {
     public:
         std::vector <std::set <Biedge> > edge;
+        std::vector <std::set <Biedge> > redge; //reverse edge
         // 区分biedged和directed biedged
         bool directed;
         
