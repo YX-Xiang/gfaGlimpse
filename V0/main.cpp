@@ -132,9 +132,8 @@ int main(int argc, char* argv[]) {
 	Growth growth = Growth(outputPath);
 	// growth.statGrowth(inputGfaFile);
 
-	// Bubble diBubble, biBubble;
-	// diBubble.findBubble(diGraph);
+	Bubble diBubble, biBubble, dibiBubble;
 	// biBubble.findBubble(biedgedGraph);
-
+	// dibiBubble.findBubble(diBiedgedGraph,1);
     return 0;
 }
