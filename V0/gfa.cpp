@@ -80,6 +80,8 @@ void Gfa::gfa2Graph (const std::string& gfaFile, DiGraph& diGraph, BiedgedGraph&
     // std::cout << segmentNumber << " " << linkNumber << std::endl;
     diGraph.edge = std::vector <std::set <long long> > ((segmentNumber << 1) + 1, std::set <long long>());
     diBiedgedGraph.edge = std::vector <std::set <Biedge> > ((segmentNumber << 1) + 1, std::set <Biedge> ());
+    diBiedgedGraph.redge = std::vector <std::set <Biedge> > ((segmentNumber << 1) + 1, std::set <Biedge> ());    //reverse edge
+    
     std::vector <std::set <char> > segmentDirection = std::vector <std::set <char> > (segmentNumber + 1, std::set <char>());
 
     for(auto line: tempLine) {
@@ -166,6 +168,10 @@ void Gfa::gfa2Graph (const std::string& gfaFile, DiGraph& diGraph, BiedgedGraph&
         // directed biedged graph加link型边
         newBiedge.to = rnode;
         diBiedgedGraph.edge[lnode].insert(newBiedge);
+
+        // directed biedged graph加link型边 的反向边    
+        newBiedge.to=lnode;                             //
+        diBiedgedGraph.redge[rnode].insert(newBiedge);  //
     }
 
     diGraph.vertexNumber = diGraph.vertexVal.size();
