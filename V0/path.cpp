@@ -1,4 +1,5 @@
 #include "path.h"
+#include <cstdlib>
 #include <iostream>
 #include <string>
 
@@ -126,22 +127,35 @@ void Coverage::statCoverage(const BiedgedGraph& biedgedGraph) {
 }
 
 
-void Coverage::print2File(const std::string&) {
-    // T. B. C.
+void Coverage::print2File(const std::string& outputFile, int mode) {
+    std::ofstream output(outputFile);
+    if (!output.is_open()) {
+        std::cerr << "Error opening file: " << outputFile << std::endl;
+        return;
+    }
+
+    int haplotypeCount = path.size();
+    output << "Count\tbp\t\tNode\t\tEdge\n";
+    for (int haplotype = 1; haplotype <= haplotypeCount; haplotype ++) {
+        output << haplotype << "\t\t" << bpCoverage[haplotype] << "\t\t"
+            << vertexCoverage[haplotype] << "\t\t" << edgeCoverage[haplotype] << '\n';
+    }
+    output.close();
+
+    if (mode == 1) {
+        std::cerr << "--- The coverage of the digraph has been successfully exported to the file: " << outputFile << std::endl;
+    } else if (mode == 2) {
+        std::cerr << "--- The coverage of the bidirected graph has been successfully exported to the file: " << outputFile << std::endl;
+    }
+    
 }
 
 
-Growth::Growth(const std::string& outputPath) {
-    if (!outputPath.empty() && outputPath.back() == '/') {
-        tmpPath = outputPath + "tmp";
+Growth::Growth(const std::string& outputFolderPath) {
+    if (!outputFolderPath.empty() && outputFolderPath.back() == '/') {
+        outputPath = outputFolderPath + "gfa";
     } else {
-        tmpPath = outputPath + "/tmp";
-    }
-
-    std::string command = "mkdir -p " + tmpPath;
-    int result = std::system(command.c_str());
-    if (result != 0) {
-        std::cerr << "Command failed with return code " << result << std::endl;
+        outputPath = outputFolderPath + "/gfa";
     }
 }
 
@@ -150,7 +164,7 @@ Growth::~Growth() {}
 
 
 void Growth::statGrowth(const std::string& gfaFile) {
-    std::string path_file = tmpPath + "/paths.haplotypes.txt";
+    std::string path_file = outputPath + "/paths.haplotypes.txt";
     std::ifstream infile(gfaFile);
     std::ofstream outfile(path_file);
     std::string line;
@@ -178,10 +192,22 @@ void Growth::statGrowth(const std::string& gfaFile) {
         }
     }
 
-    std::string html_file = tmpPath + "/histgrowth.html";
-    std::string command = "panacus histgrowth -t4 -l 1,2,1,1,1 -q 0,0,1,0.5,0.1 -S -s " 
-        + path_file + " -c all -a -o html " + gfaFile + " > " + html_file;
-    FILE* pipe = popen(command.c_str(), "r");
+    std::string htmlFile = outputPath + "/histgrowth.html";
+    std::string csvFile = outputPath + "/histgrowth.csv";
+    std::string logFile = outputPath + "/histgrowth.log";
+    std::string commandHtml = "RUST_LOG=info panacus histgrowth -t4 -l 1,2,1,1,1 -q 0,0,1,0.5,0.1 -S -s " 
+        + path_file + " -c all -a -o html " + gfaFile + " > " + htmlFile + " 2> " + logFile;
+    std::string commandCsv = "RUST_LOG=info panacus histgrowth -t4 -l 1,2,1,1,1 -q 0,0,1,0.5,0.1 -S -s " 
+        + path_file + " -c all -a " + gfaFile + " > " + csvFile + " 2>> " + logFile;
+    FILE* pipe1 = popen(commandHtml.c_str(), "r");
+    FILE* pipe2 = popen(commandCsv.c_str(), "r");
+
+    std::ifstream file(csvFile);
+    if (pipe2 == NULL) {
+        std::cerr << "!!! Error: Unexpected growth calculation. Please check the log file for more details: " << logFile << std::endl;
+    } else {
+        std::cout << "+++ Growth calculation successful." << std::endl << std::endl;
+    }
 }   
 
 

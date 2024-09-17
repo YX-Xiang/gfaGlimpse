@@ -1,5 +1,4 @@
 #include "graph.h"
-#include <iostream>
 
 
 Graph::Graph() {
@@ -20,6 +19,29 @@ DiGraph::DiGraph() {
 
 
 DiGraph::~DiGraph() {}
+
+
+void DiGraph::vertexvalStat(const std::string& outputFile) {
+    std::ofstream output(outputFile);
+    if (!output.is_open()) {
+        std::cerr << "Error opening file: " << outputFile << std::endl;
+        return;
+    }
+    
+    std::unordered_map <int,int> vertexvalMap = std::unordered_map <int,int> ();
+    for (auto v: vertexVal) {
+        if (v.second) {
+            vertexvalMap[v.second] ++;
+        }
+    }
+    
+    // 输出点权分布（每一行第一个数字代表具体点权，第二个数字代表有几个点刚好是这个点权）
+    for (auto mapElement: vertexvalMap) {
+        output << mapElement.first << "\t" << mapElement.second << "\n";
+    }
+    std::cerr << "--- The node size of the digraph has been successfully exported to the file: " << outputFile << std::endl;
+    output.close();
+}
 
 
 void DiGraph::print() {
@@ -62,6 +84,31 @@ BiedgedGraph::BiedgedGraph() {
 
 
 BiedgedGraph::~BiedgedGraph() {}
+
+
+void BiedgedGraph::edgevalStat(const std::string& outputFile) {
+    std::ofstream output(outputFile);
+    if (!output.is_open()) {
+        std::cerr << "Error opening file: " << outputFile << std::endl;
+        return;
+    }
+    
+    std::unordered_map <int,int> edgevalMap = std::unordered_map <int,int> ();
+    for (auto v: edge) {
+        for (auto e: v) {
+            if (e.value) {
+                edgevalMap[e.value] ++;
+            }
+        }
+    }
+    
+    // 输出点权分布（每一行第一个数字代表具体点权，第二个数字代表有几个点刚好是这个点权）
+    for (auto mapElement: edgevalMap) {
+        output << mapElement.first << "\t" << (mapElement.second >> 1) << "\n";
+    }
+    std::cerr << "--- The node size of the bidirected graph has been successfully exported to the file: " << outputFile << std::endl;
+    output.close();
+}
 
 
 void BiedgedGraph::print() {

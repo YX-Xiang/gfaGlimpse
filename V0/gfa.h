@@ -12,8 +12,15 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <vector>
+#include <iomanip>
+#include <filesystem>
 
 #include "graph.h"
+#include "vertex.h"
+#include "edge.h"
+#include "path.h"
+#include "connectivity.h"
+#include "bubble.h"
 
 
 class Gfa {
@@ -26,7 +33,10 @@ class Gfa {
         Gfa();
         ~Gfa();
 
-        void gfa2Graph(const std::string&, DiGraph&, BiedgedGraph&, BiedgedGraph&);
+        void gfa2Graph(const std::string&, const std::string&, DiGraph&, BiedgedGraph&, BiedgedGraph&);
+        void printDigraphInfo(const std::string&, DiGraph&);
+        void printBigraphInfo(const std::string&, BiedgedGraph&);
+        void printDibigraphInfo(const std::string&, BiedgedGraph&);
 };
 
 

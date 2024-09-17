@@ -1,8 +1,13 @@
 #include "connectivity.h"
+#include <utility>
 
 
 Connectivity::Connectivity(int vertexNumber) {
     nodeNumber = vertexNumber;
+    bridgeCount = 0;
+    cutPointCount = 0;
+    sccCount = 0;
+    wccCount = 0;
     vertexMap = std::vector <long long> (1,0);
 }
 
@@ -12,10 +17,10 @@ Connectivity::~Connectivity() {}
 
 void Connectivity::initGraph() {
     sccNumber = 0;
-    cut = 0;
     dfsNumber = 0;
     graph = std::vector < std::set <int> > (nodeNumber + 1, std::set <int> ());
     isCut = std::vector <bool> (nodeNumber + 1, 0);
+    bridge = std::set <std::pair<int, int>> ();
     visNum = std::vector <long long> (nodeNumber + 1, 0);
     low = std::vector <long long> (nodeNumber + 1, 0);
     sccNum = std::vector <long long> (nodeNumber + 1, 0);
@@ -24,7 +29,11 @@ void Connectivity::initGraph() {
 }
 
 
-void Connectivity::tarjan(int fiNode, bool mode) { //mode为0表示判断割点，为1表示判断割边
+// mode为0表示判断割边和割点，为1表示找scc
+void Connectivity::tarjan(int fiNode, int mode) { 
+    int child = 0;
+    std::map < std::pair<int, int>, bool> visEdge;
+    std::unordered_map<int, int> fa;
     visNum[fiNode] = low[fiNode] = ++ dfsNumber;
     scc.push(fiNode);
 
@@ -37,6 +46,11 @@ void Connectivity::tarjan(int fiNode, bool mode) { //mode为0表示判断割点�
 
         for (auto nxtNode: graph[nowNode]) {
             if (! visNum[nxtNode]) {
+                if (nowNode == fiNode) {
+                    child ++;
+                }
+                visEdge[{nowNode, nxtNode}] = 1;
+                fa[nxtNode] = nowNode;
                 visNum[nxtNode] = low[nxtNode] = ++ dfsNumber;
                 scc.push(nxtNode);
                 dfsStack.push(nxtNode);
@@ -46,20 +60,27 @@ void Connectivity::tarjan(int fiNode, bool mode) { //mode为0表示判断割点�
 
         if (nowNode == dfsStack.top()) {
             for (auto nxtNode: graph[nowNode]) {
-                if (visNum[nxtNode] > visNum[nowNode]) {
+                if (visEdge[{nowNode, nxtNode}]) {
                     low[nowNode] = std::min(low[nowNode], low[nxtNode]);
                     if (mode == 0) {
-                        if (low[nxtNode] >= low[nowNode] && nowNode != fiNode) {
-                            isCut[nowNode] = 1;
+                        if (low[nxtNode] > visNum[nowNode] && nowNode != fiNode) {
+                            bridge.insert({std::min(nowNode, nxtNode), std::max(nowNode, nxtNode)});
                         }
-                    } else {
-                        if (low[nxtNode] > low[nowNode] && nowNode != fiNode) {
+                        if (low[nxtNode] >= visNum[nowNode] && nowNode != fiNode) {
                             isCut[nowNode] = 1;
                         }
                     }
                     
-                } else if (!sccNum[nxtNode]) {
-                    low[nowNode] = std::min(low[nowNode], visNum[nxtNode]);
+                } else {
+                    if (mode == 0) {
+                        if (visNum[nxtNode] < visNum[nowNode] && nxtNode != fa[nowNode]) {
+                            low[nowNode] = std::min(low[nowNode], visNum[nxtNode]);
+                        }
+                    } else {
+                        if (!sccNum[nxtNode]) {
+                            low[nowNode] = std::min(low[nowNode], visNum[nxtNode]);
+                        }
+                    }
                 }
             }
 
@@ -78,10 +99,31 @@ void Connectivity::tarjan(int fiNode, bool mode) { //mode为0表示判断割点�
             dfsStack.pop();
         }
     }
+    if (child >= 2) {
+        isCut[fiNode] = 1;
+    }
 }
 
 
 void Connectivity::findComponent(const BiedgedGraph& biedgedGraph) {
+    // 求 bidirected graph 中的割点（需要缩点）
+    initGraph();
+    for (int vID = 1; vID <= nodeNumber; vID ++) {
+        for (auto e: biedgedGraph.edge[vID]) {
+            int nxtNode = e.to;
+            graph[((vID + 1) >> 1)].insert(((nxtNode + 1) >> 1));
+        }
+    }
+    for (int vID = 1; vID <= (nodeNumber >> 1); vID ++) {
+        if (! visNum[vID]) {
+            tarjan(vID, 0);
+        }
+        if (isCut[vID]) {
+            cutPointCount ++;
+        }
+    }
+
+    // 求 biedged graph 中的桥
     initGraph();
     for (int vID = 1; vID <= nodeNumber; vID ++) {
         for (auto e: biedgedGraph.edge[vID]) {
@@ -90,6 +132,21 @@ void Connectivity::findComponent(const BiedgedGraph& biedgedGraph) {
         }
     }
 
+    for (int vID = 1; vID <= nodeNumber; vID ++) {
+        if (! visNum[vID]) {
+            tarjan(vID, 0);
+        }
+    }
+    bridgeCount = bridge.size();
+
+    // 求 biedged graph 中的连通分量
+    initGraph();
+    for (int vID = 1; vID <= nodeNumber; vID ++) {
+        for (auto e: biedgedGraph.edge[vID]) {
+            int nxtNode = e.to;
+            graph[vID].insert(nxtNode);
+        }
+    }
     for (int vID = 1; vID <= nodeNumber; vID ++) {
         if (! visNum[vID]) {
             tarjan(vID, 1);
@@ -125,6 +182,7 @@ void Connectivity::findWCC(const DiGraph& diGraph) {
             tarjan(vID, 1);
         }
     }
+    wccCount = sccList.size();
 }
 
 
@@ -142,6 +200,7 @@ void Connectivity::findSCC(const DiGraph& diGraph) {
             tarjan(vID, 1);
         }
     }
+    sccCount = sccList.size();
 }
 
 

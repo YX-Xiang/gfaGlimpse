@@ -1,4 +1,5 @@
 #include "gfa.h"
+#include <string>
 
 
 Gfa::Gfa() {
@@ -13,7 +14,7 @@ Gfa::Gfa() {
 Gfa::~Gfa() {}
 
 
-void Gfa::gfa2Graph (const std::string& gfaFile, DiGraph& diGraph, BiedgedGraph& biedgedGraph, BiedgedGraph& diBiedgedGraph) {
+void Gfa::gfa2Graph (const std::string& gfaFile, const std::string& outputFolderPath, DiGraph& diGraph, BiedgedGraph& biedgedGraph, BiedgedGraph& diBiedgedGraph) {
     std::cerr << "+++ Load gfa file from " << gfaFile << std::endl;
 
     biedgedGraph.directed = 0;
@@ -23,6 +24,16 @@ void Gfa::gfa2Graph (const std::string& gfaFile, DiGraph& diGraph, BiedgedGraph&
     struct stat info;
     stat(gfaFile.c_str(), &info);
     fileSize = info.st_size;
+
+    const char* units[] = { "B", "KB", "MB", "GB", "TB" };
+    double size = static_cast<double>(fileSize);
+    int unitIndex = 0;
+
+    // 每次除以 1024，直到大小在 1 到 1000 之间，或者达到 TB（index == 4）
+    while (size >= 1024 && unitIndex < 4) {
+        size /= 1024;
+        ++unitIndex;
+    }
 
     std::ifstream ifs(gfaFile);
     std::vector <std::string> tempLine = std::vector <std::string> ();
@@ -254,5 +265,261 @@ void Gfa::gfa2Graph (const std::string& gfaFile, DiGraph& diGraph, BiedgedGraph&
         << singleDirectionSegmentCount << " unidirectional segments and "
         << biDirectionalSegmentCount << " bidirectional segments) and " 
         << linkNumber << " links, with a total size of " 
-        << fileSize << "B. +++\n";
+        << std::fixed << std::setprecision(2) << size << " " << units[unitIndex] << ". +++\n";
+
+    std::string outputFile;
+    if (!outputFolderPath.empty() && outputFolderPath.back() == '/') {
+        std::filesystem::create_directories(outputFolderPath + "gfa");
+        outputFile = outputFolderPath + "gfa/basicStatistics.txt";
+    } else {
+        std::filesystem::create_directories(outputFolderPath + "/gfa");
+        outputFile = outputFolderPath + "/gfa/basicStatistics.txt";
+    }
+    std::ofstream outFile(outputFile);
+
+    if (!outFile.is_open()) {
+        std::cerr << "Error opening file: " << outputFile << std::endl;
+        return;
+    }
+
+    outFile << "file_size\t" << std::fixed << std::setprecision(2) << size << units[unitIndex] 
+            << "\n#segments\t" << segmentNumber 
+            << "\n#links\t\t" << linkNumber 
+            << "\n#paths\t\t" << path.size() 
+            << "\n#single_direction_segment\t\t\t" << singleDirectionSegmentCount 
+            << "\n#bidirectional_direction_segment\t" << biDirectionalSegmentCount << '\n';
+
+    outFile.close();
+}
+
+
+void Gfa::printDigraphInfo(const std::string& outputFolderPath, DiGraph& diGraph) {
+    std::string digraphFolder;
+    if (!outputFolderPath.empty() && outputFolderPath.back() == '/') {
+        digraphFolder = outputFolderPath + "digraph";
+    } else {
+        digraphFolder = outputFolderPath + "/digraph";
+    }
+    std::filesystem::create_directories(digraphFolder);
+
+    std::string basicStatisticsFile = digraphFolder + "/basicStatistics.txt";
+    std::ofstream basicStatistics(basicStatisticsFile);
+    if (!basicStatistics.is_open()) {
+        std::cerr << "Error opening file: " << basicStatisticsFile << std::endl;
+        return;
+    }
+
+    // **输出 vertex 的信息**
+    Vertex vertex;
+    vertex.statVertex(diGraph);
+
+    std::string vertexvalFile = digraphFolder + "/vertexval.txt";
+    std::string indegreeFile = digraphFolder + "/inDegree.txt";
+    std::string outdegreeFile = digraphFolder + "/outDegree.txt";
+    std::string coverageFile = digraphFolder + "/coverage.txt";
+
+    basicStatistics << "#vertices\t\t" << diGraph.vertexNumber 
+        << "\ntotal_length\t" << vertex.totalLen 
+        << "\nN50\t\t\t\t" << vertex.N50 
+        << "\nL50\t\t\t\t" << vertex.L50 
+        << "\nU50\t\t\t\t" << vertex.U50 
+        << "\n#dead_ends\t\t" << vertex.deadEnd 
+        << "\n#start_ends\t\t" << vertex.startEnd << "\n";
+    diGraph.vertexvalStat(vertexvalFile);
+    vertex.printInDegree2File(indegreeFile);
+    vertex.printOutDegree2File(outdegreeFile);
+
+    Coverage diCoverage = Coverage(path);
+    diCoverage.statCoverage(diGraph);
+    diCoverage.print2File(coverageFile, 1);
+
+
+    // **输出 edge 的信息**
+    std::string cycleFile = digraphFolder + "/cycle.txt";
+    std::string loopFile = digraphFolder + "/loop.txt";
+
+    Edge edge;
+    edge.stat(diGraph);
+
+    Connectivity diConnectivity = Connectivity(diGraph.vertexNumber);
+	std::vector <DiGraph> diSubgraphList = std::vector <DiGraph>();
+	diConnectivity.edgeCompress(diGraph);
+    diConnectivity.findWCC(diGraph);
+	diConnectivity.findSCC(diGraph);
+	diConnectivity.SCC2Subgraph(diGraph, diSubgraphList);
+	// 只需要在上一步分离出的SCC中统计cycle相关指标，大大降低时间复杂度
+	Cycle cycle;
+	cycle.work(diSubgraphList, edge.loopLen);
+    edge.print2File(loopFile, 1);
+	cycle.print2File(cycleFile, edge.loopCount);
+
+    basicStatistics << "#edges\t\t\t" << edge.edgeCount 
+        << "\n#loops\t\t\t" << edge.loopCount
+        << "\n#cycles\t\t\t" << cycle.cycleCount + edge.loopCount
+        << "\nminimum_weight_cycle_without_loop\t" << cycle.minCycleLen << "\n";
+
+    
+    // **输出 subgraph 的信息**
+    basicStatistics << "#weak_connected_components\t\t\t" << diConnectivity.wccCount
+        << "\n#strongly_connected_components\t\t" << diConnectivity.sccCount << "\n";
+    
+
+    std::cerr << "+++ The statistics on the digraph are complete." << std::endl << std::endl;
+}
+
+
+void Gfa::printBigraphInfo(const std::string& outputFolderPath, BiedgedGraph& biedgedGraph) {
+    std::string bidirectedGraphFolder, biedgedGraphFolder;
+    if (!outputFolderPath.empty() && outputFolderPath.back() == '/') {
+        bidirectedGraphFolder = outputFolderPath + "bidirectedGraph";
+        biedgedGraphFolder = outputFolderPath + "biedgedGraph";
+    } else {
+        bidirectedGraphFolder = outputFolderPath + "/bidirectedGraph";
+        biedgedGraphFolder = outputFolderPath + "/biedgedGraph";
+    }
+    std::filesystem::create_directories(bidirectedGraphFolder);
+    std::filesystem::create_directories(biedgedGraphFolder);
+
+    std::string bidirectedBasicFile = bidirectedGraphFolder + "/basicStatistics.txt";
+    std::string biedgedBasicFile = biedgedGraphFolder + "/basicStatistics.txt";
+    std::ofstream bidirectedBasic(bidirectedBasicFile);
+    std::ofstream biedgedBasic(biedgedBasicFile);
+
+
+    // *处理 bidirected graph*
+    if (!bidirectedBasic.is_open()) {
+        std::cerr << "Error opening file: " << bidirectedBasicFile << std::endl;
+        return;
+    }
+
+    // **输出 vertex 的信息**
+    Vertex vertex;
+    vertex.statVertex(biedgedGraph);
+
+    std::string bidirectedVertexvalFile = bidirectedGraphFolder + "/vertexval.txt";
+    std::string bidirectedDegreeFile = bidirectedGraphFolder + "/degree.txt";
+    std::string bidirectedCoverageFile = bidirectedGraphFolder + "/coverage.txt";
+
+    bidirectedBasic << "#vertices\t\t" << (biedgedGraph.vertexNumber >> 1)
+        << "\ntotal_length\t" << vertex.totalLen 
+        << "\nN50\t\t\t\t" << vertex.N50 
+        << "\nL50\t\t\t\t" << vertex.L50 
+        << "\nU50\t\t\t\t" << vertex.U50 
+        << "\n#dead_ends\t\t" << vertex.deadEnd << "\n";
+    biedgedGraph.edgevalStat(bidirectedVertexvalFile);
+    vertex.printDegree2File(bidirectedDegreeFile);
+
+    Coverage biCoverage = Coverage(path);
+	biCoverage.statCoverage(biedgedGraph);
+    biCoverage.print2File(bidirectedCoverageFile, 2);
+
+    // **输出 edge 的信息**
+    std::string bidirectedLoopFile = bidirectedGraphFolder + "/loop.txt";
+
+    Edge edge;
+    edge.stat(biedgedGraph);
+    edge.print2File(bidirectedLoopFile, 2);
+
+    bidirectedBasic << "#edges\t\t\t" << edge.linkEdgeCount 
+        << "\n#loops\t\t\t" << edge.loopCount << "\n";
+
+    // **输出 subgraph 的信息**
+    Connectivity biConnectivity = Connectivity(biedgedGraph.vertexNumber);
+	std::vector <BiedgedGraph> diBiSubgraphList = std::vector <BiedgedGraph>();
+	biConnectivity.findComponent(biedgedGraph);
+
+    Bubble biBubble;
+	biBubble.findBubble(biedgedGraph, 0);
+    biBubble.print2File(bidirectedGraphFolder);
+
+    bidirectedBasic << "#cuts\t\t\t" << biConnectivity.cutPointCount 
+        << "\n#supperbubbles\t" << biBubble.superBubbleCount
+        << "\nsimple_bubbles\t" << biBubble.simpleBubbleCount 
+        << std::fixed << std::setprecision(4)
+        << "\nsequence_coverage_of_chains\t" << biBubble.seqCoverage << "%"
+        << "\nnode_coverage_of_chains\t\t" << biBubble.nodeCoverage << "%"
+        << "\nlongest_chain_seq_wise\t\t" << biBubble.maxChainBp << " bp"
+        << "\nlongest_chain_bubble_wise\t" << biBubble.maxChainBubbleCount << " bubble(s)" << "\n";
+    bidirectedBasic.close();
+    std::cerr << "+++ The statistics on the bidirected graph are complete." << std::endl << std::endl;
+
+
+    // *处理 biedged graph*
+    if (!biedgedBasic.is_open()) {
+        std::cerr << "Error opening file: " << biedgedBasicFile << std::endl;
+        return;
+    }
+    
+    // **输出 vertex 的信息**
+    std::string biedgedDegreeFile = biedgedGraphFolder + "/degree.txt";
+    vertex.printLinkDegree2File(biedgedDegreeFile);
+
+    biedgedBasic << "#vertices\t\t" << biedgedGraph.vertexNumber << "\n";
+
+    // **输出 edge 的信息**
+    std::string biedgedLoopFile = biedgedGraphFolder + "/loop.txt";
+    edge.print2File(biedgedLoopFile, 3);
+
+    biedgedBasic << "#edges\t\t\t" << (biedgedGraph.vertexNumber >> 1) + edge.linkEdgeCount 
+        << "\n#loops\t\t\t" << edge.loopCount << "\n";
+
+    // **输出 subgraph 的信息**
+    biedgedBasic << "#cuts\t\t\t" << biConnectivity.bridgeCount << "\n";
+    biedgedBasic.close();
+    std::cerr << "+++ The statistics on the biedged graph are complete." << std::endl << std::endl;
+}
+
+
+void Gfa::printDibigraphInfo(const std::string& outputFolderPath, BiedgedGraph& dibiedgedGraph) {
+    std::string dibigraphFolder;
+    if (!outputFolderPath.empty() && outputFolderPath.back() == '/') {
+        dibigraphFolder = outputFolderPath + "dibigraph";
+    } else {
+        dibigraphFolder = outputFolderPath + "/dibigraph";
+    }
+    std::filesystem::create_directories(dibigraphFolder);
+
+    std::string basicStatisticsFile = dibigraphFolder + "/basicStatistics.txt";
+    std::ofstream basicStatistics(basicStatisticsFile);
+    if (!basicStatistics.is_open()) {
+        std::cerr << "Error opening file: " << basicStatisticsFile << std::endl;
+        return;
+    }
+
+    // **输出 vertex 的信息**
+    Vertex vertex;
+    vertex.statVertex(dibiedgedGraph);
+
+    std::string degreeFile = dibigraphFolder + "/degree.txt";
+    vertex.printDibiDegree2File(degreeFile);
+
+    basicStatistics << "#vertices\t\t" << dibiedgedGraph.vertexNumber 
+        << "\n#dead_ends\t\t" << vertex.deadEnd 
+        << "\n#start_ends\t\t" << vertex.startEnd << "\n";
+
+    // **输出 edge 的信息**
+    // !!! TODO: 找cycle再想想办法，现在时间复杂度太高了
+    Edge edge;
+    edge.stat(dibiedgedGraph);
+
+    std::string loopFile = dibigraphFolder + "/loop.txt";
+    edge.print2File(loopFile, 4);
+
+    basicStatistics << "#edges\t\t\t" << edge.edgeCount
+        << "\n#loops\t\t\t" << edge.loopCount << "\n";
+
+    // **输出 subgraph 的信息**
+    Bubble dibiBubble;
+	dibiBubble.findBubble(dibiedgedGraph, 1);
+    dibiBubble.print2File(dibigraphFolder);
+
+    basicStatistics << "#supperbubbles\t" << dibiBubble.superBubbleCount
+        << "\nsimple_bubbles\t" << dibiBubble.simpleBubbleCount 
+        << std::fixed << std::setprecision(4)
+        << "\nsequence_coverage_of_chains\t" << dibiBubble.seqCoverage << "%"
+        << "\nnode_coverage_of_chains\t\t" << dibiBubble.nodeCoverage << "%"
+        << "\nlongest_chain_seq_wise\t\t" << dibiBubble.maxChainBp << " bp"
+        << "\nlongest_chain_bubble_wise\t" << dibiBubble.maxChainBubbleCount << " bubble(s)" << "\n";
+    basicStatistics.close();
+    std::cerr << "+++ The statistics on the directed biedged graph are complete." << std::endl << std::endl;
 }

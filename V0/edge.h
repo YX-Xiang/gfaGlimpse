@@ -16,17 +16,15 @@
 class Edge {
     public:
         long long edgeCount, linkEdgeCount;
+        int loopCount;
+        std::unordered_map <long long, int> loopLen;
 
         Edge();
         ~Edge();
 
         void stat(const DiGraph&);
         void stat(const BiedgedGraph&);
-        void print2File(const std::string&);
-
-    private:
-        int loopCount;
-        std::unordered_map <long long, int> loopLen;
+        void print2File(const std::string&, int);
 };
 
 
@@ -39,9 +37,9 @@ class Cycle {
         Cycle();
         ~Cycle();
 
-        void work(std::vector <DiGraph>&);
-        void work(std::vector <BiedgedGraph>&);
-        void print2File(const std::string&);
+        void work(std::vector <DiGraph>&, std::unordered_map <long long, int>&);
+        void work(std::vector <BiedgedGraph>&, std::unordered_map <long long, int>&);
+        void print2File(const std::string&, int);
 
     private:
         void statCycle(const DiGraph&);

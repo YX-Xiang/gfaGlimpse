@@ -13,7 +13,7 @@
 
 class Connectivity {
     public:
-        int sccNumber, nodeNumber;
+        int sccNumber, nodeNumber, bridgeCount, cutPointCount, sccCount, wccCount;
         std::vector < std::vector <int> > sccList;
 
         Connectivity(int);
@@ -30,13 +30,14 @@ class Connectivity {
     private:
         std::vector < std::set <int> > graph;
         std::vector <long long> vertexMap, reVertexMap;
-        int cut, dfsNumber;
+        int dfsNumber;
         std::vector <bool> isCut;
+        std::set <std::pair<int, int>> bridge;
         std::vector <long long> visNum, low, sccNum;
         std::stack <long long> scc;
 
         void initGraph();
-        void tarjan(int, bool);
+        void tarjan(int, int);
 };
 
 #endif

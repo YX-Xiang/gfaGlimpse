@@ -3,11 +3,7 @@
 
 #include "graph.h"
 #include "gfa.h"
-#include "vertex.h"
-#include "edge.h"
-#include "connectivity.h"
 #include "path.h"
-#include "bubble.h"
 
 
 void showUsage(std::string name) {
@@ -36,7 +32,7 @@ int main(int argc, char* argv[]) {
     std::string inputThread = "";
     std::string inputMode = "cycle";
     std::string inputGfaFile = "";
-	std::string outputPath = "";
+	std::string outputFolderPath = "";
     int threads = 1;
 
     for (int i = 1; i < argc; ++ i) {
@@ -64,7 +60,7 @@ int main(int argc, char* argv[]) {
 			}  
 		} else if (strcmp(argv[i], "-o") == 0) {
 			if (i + 1 < argc) {
-				outputPath = argv[++i];
+				outputFolderPath = argv[++i];
 			} else {
 				std::cerr << "-o option requires one argument." << std::endl;
 				return 1;
@@ -77,63 +73,17 @@ int main(int argc, char* argv[]) {
     DiGraph diGraph;
     BiedgedGraph biedgedGraph, diBiedgedGraph;
     Gfa gfa;
-    gfa.gfa2Graph(inputGfaFile, diGraph, biedgedGraph, diBiedgedGraph);
+    gfa.gfa2Graph(inputGfaFile, outputFolderPath, diGraph, biedgedGraph, diBiedgedGraph);
 	// diGraph.print();
 	// biedgedGraph.print();
 	// diBiedgedGraph.print();
 
-	Vertex diVertex, biVertex, diBiVertex;
-	diVertex.statVertex(diGraph);
-	biVertex.statVertex(biedgedGraph);
-	diBiVertex.statVertex(diBiedgedGraph);
-	// diVertex.print2File(outputPath);
-	// biVertex.print2File(outputPath);
-	// diBiVertex.print2File(outputPath);
+	Growth growth = Growth(outputFolderPath);
+	growth.statGrowth(inputGfaFile);
 
-	Edge diEdge, biEdge, diBiEdge;
-	diEdge.stat(diGraph);
-	biEdge.stat(biedgedGraph);
-	diBiEdge.stat(diBiedgedGraph);
-	// diEdge.print2File(outputPath);
-	// biEdge.print2File(outputPath);
-	// diBiEdge.print2File(outputPath);
+	gfa.printDigraphInfo(outputFolderPath, diGraph);
+	gfa.printBigraphInfo(outputFolderPath, biedgedGraph);
+	gfa.printDibigraphInfo(outputFolderPath, diBiedgedGraph);
 
-
-	Connectivity diConnectivity = Connectivity(diGraph.vertexNumber);
-	std::vector <DiGraph> diSubgraphList = std::vector <DiGraph>();
-	diConnectivity.edgeCompress(diGraph);
-	diConnectivity.findSCC(diGraph);
-	diConnectivity.SCC2Subgraph(diGraph, diSubgraphList);
-
-	// 只需要在上一步分离出的SCC中统计cycle相关指标，大大降低时间复杂度
-	Cycle diTotal;
-	diTotal.work(diSubgraphList);
-	diTotal.print2File(outputPath);
-	
-	Connectivity diBiConnectivity = Connectivity(diBiedgedGraph.vertexNumber);
-	std::vector <BiedgedGraph> diBiSubgraphList = std::vector <BiedgedGraph>();
-	// diBiConnectivity.findComponent(diBiedgedGraph);
-	// diBiConnectivity.SCC2Subgraph(diBiedgedGraph, diBiSubgraphList);
-
-	Cycle diBiTotal;
-	// diBiTotal.work(diBiSubgraphList);
-	// diBiTotal.print2File(outputPath);
-
-	Coverage diCoverage = Coverage(gfa.path);
-	Coverage biCoverage = Coverage(gfa.path);
-	// diCoverage.statCoverage(diGraph);
-	// biCoverage.statCoverage(biedgedGraph);
-
-	// ···TODO··· 先暂时放弃了，当个快乐的调包侠o(*￣▽￣*)ブ
-	// Growth diGrowth = Growth(gfa.path);
-	// Growth biGrowth = Growth(gfa.path);
-	// diGrowth.statGrowth(diGraph);
-	// biGrowth.statGrowth(biedgedGraph);
-	Growth growth = Growth(outputPath);
-	// growth.statGrowth(inputGfaFile);
-
-	Bubble diBubble, biBubble, dibiBubble;
-	// biBubble.findBubble(biedgedGraph);
-	// dibiBubble.findBubble(diBiedgedGraph,1);
     return 0;
 }

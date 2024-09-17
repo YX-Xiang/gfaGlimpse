@@ -3,9 +3,11 @@
 
 
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <set>
 #include <iostream>
+#include <fstream>
 
 
 class Graph {
@@ -27,6 +29,7 @@ class DiGraph: public Graph {
         DiGraph();
         ~DiGraph();
 
+        void vertexvalStat(const std::string&);
         void print();
 };
 
@@ -52,6 +55,7 @@ class BiedgedGraph: public Graph {
         
         BiedgedGraph();
         ~BiedgedGraph();
+        void edgevalStat(const std::string&);
         void print();
 };
 

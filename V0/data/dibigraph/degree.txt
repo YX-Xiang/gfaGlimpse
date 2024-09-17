@@ -1,0 +1,33 @@
+The distribution of in-degree
+Segment:
+1 13290
+0 13290
+Link:
+11 1
+8 1
+10 2
+7 2
+5 6
+6 4
+9 1
+4 17
+3 293
+2 4051
+1 8911
+0 13291
+The distribution of out-degree
+Segment:
+0 13290
+1 13290
+Link:
+10 1
+8 1
+6 6
+4 9
+5 4
+9 3
+7 3
+3 298
+1 8904
+2 4060
+0 13291

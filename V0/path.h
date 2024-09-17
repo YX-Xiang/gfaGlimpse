@@ -4,9 +4,8 @@
 
 #include <cstdlib>
 #include <iterator>
+#include <sstream>
 
-
-#include "gfa.h"
 #include "graph.h"
 
 
@@ -19,7 +18,7 @@ class Coverage {
 
         void statCoverage(const DiGraph&);
         void statCoverage(const BiedgedGraph&);
-        void print2File(const std::string&);
+        void print2File(const std::string&, int);
 
     private:
         std::vector <int> vertexCoverage, edgeCoverage;
@@ -30,7 +29,7 @@ class Coverage {
 class Growth {
     public:
         //const std::vector <std::vector <std::pair <int, char> > >& path;
-        std::string tmpPath;
+        std::string outputPath;
 
         Growth(const std::string&);
         ~Growth();
