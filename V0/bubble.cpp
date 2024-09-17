@@ -25,15 +25,26 @@ bool is_simple(int di, std::vector<int> &in, const BiedgedGraph &biedgedGraph, i
 	t = in[3];
 	x = in[1];
 	y = in[2];
-	if (biedgedGraph.edge[id(x, 0)].size() == 2 &&
-		biedgedGraph.edge[id(x, 1)].size() == 2 &&
-		biedgedGraph.edge[id(y, 0)].size() == 2 &&
-		biedgedGraph.edge[id(y, 1)].size() == 2)
-		;
-	else {
-		return false;
+	if (is_dibigraph) {
+		if (biedgedGraph.edge[id(x, 0)].size() == 1 &&
+			biedgedGraph.edge[id(x, 1)].size() == 1 &&
+			biedgedGraph.edge[id(y, 0)].size() == 1 &&
+			biedgedGraph.edge[id(y, 1)].size() == 1)
+			;
+		else {
+			return false;
+		}
+	} else {
+		if (biedgedGraph.edge[id(x, 0)].size() == 2 &&
+			biedgedGraph.edge[id(x, 1)].size() == 2 &&
+			biedgedGraph.edge[id(y, 0)].size() == 2 &&
+			biedgedGraph.edge[id(y, 1)].size() == 2)
+			;
+		else {
+			return false;
+		}
 	}
-
+	
 	std::set<int> neis, neit;
 	if (is_dibigraph) {
 		for (auto [v, val] : biedgedGraph.edge[id(s, 0)]) {
