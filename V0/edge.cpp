@@ -91,7 +91,7 @@ void Edge::print2File(const std::string& outputFile, int mode) {
 }
 
 
-Cycle::Cycle() {
+Cycle::Cycle(int numThreads): numThreads(numThreads) {
     cycleCount = 0;
     minCycleLen = 0x7FFFFFFFFFFFFFFF;
     cycleLen = std::unordered_map <long long, int> ();
@@ -103,7 +103,7 @@ Cycle::~Cycle() {}
 
 void Cycle::work(std::vector <DiGraph>& subgraphList, std::unordered_map <long long, int>& loopLen) {
     for (auto subgraph: subgraphList) {
-		Cycle diCycle;
+		Cycle diCycle(numThreads);
 		diCycle.statCycle(subgraph);
 		cycleCount += diCycle.cycleCount;
 		if (diCycle.cycleCount) {
@@ -126,7 +126,7 @@ void Cycle::work(std::vector <DiGraph>& subgraphList, std::unordered_map <long l
 
 void Cycle::work(std::vector <BiedgedGraph>& subgraphList, std::unordered_map <long long, int>& loopLen) {
     for (auto subgraph: subgraphList) {
-		Cycle diBiCycle;
+		Cycle diBiCycle(numThreads);
 		diBiCycle.statCycle(subgraph);
 		cycleCount += diBiCycle.cycleCount;
 		if (diBiCycle.cycleCount) {
@@ -187,7 +187,9 @@ void Cycle::statCycle(const DiGraph& diGraph) {
 
     // 等待所有线程完成任务
     for (auto& th : threads) {
-        th.join();
+        if (th.joinable()) {
+            th.join();
+        }
     }
 
     // for (auto v: diGraph.vertexVal) {
@@ -222,7 +224,6 @@ void Cycle::statCycle(const BiedgedGraph& biedgedGraph) {
 void Cycle::findCycleInDirected(int startVertex, const std::vector <int>& vertexVal, 
     const std::vector <std::set <int> >& edge) {
     int vertexNumber = vertexVal.size();
-    std::cout << startVertex << std::endl;
 
     // 标记这个点当前是否是死胡同
     std::vector <bool> blocked = std::vector <bool> (vertexNumber, 0);

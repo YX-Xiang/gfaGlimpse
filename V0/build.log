@@ -34,10 +34,10 @@ edge.cpp:183:32: warning: comparison of integer expressions of different signedn
   183 |     for (int i = numThreads; i < vertexVal.size(); ++i) {
       |                              ~~^~~~~~~~~~~~~~~~~~
 edge.cpp: In member function ‘void Cycle::findCycleInDirected(int, const std::vector<int>&, const std::vector<std::set<int> >&)’:
-edge.cpp:314:21: warning: unused variable ‘preFinished’ [-Wunused-variable]
-  314 |                 int preFinished = path.back();
+edge.cpp:317:21: warning: unused variable ‘preFinished’ [-Wunused-variable]
+  317 |                 int preFinished = path.back();
       |                     ^~~~~~~~~~~
-edge.cpp:248:14: warning: variable ‘found’ set but not used [-Wunused-but-set-variable]
-  248 |         bool found = 1;
+edge.cpp:249:14: warning: variable ‘found’ set but not used [-Wunused-but-set-variable]
+  249 |         bool found = 1;
       |              ^~~~~
 g++ -Wall -Ofast -std=c++1z -fopenmp -o gfaGlimpse.exe edge.o bubble.o gfa.o vertex.o path.o connectivity.o graph.o main.o

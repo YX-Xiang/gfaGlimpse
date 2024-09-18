@@ -41,7 +41,7 @@ class Cycle {
         long long minCycleLen;
         std::unordered_map <long long, int> cycleLen;
 
-        Cycle();
+        Cycle(int);
         ~Cycle();
 
         void work(std::vector <DiGraph>&, std::unordered_map <long long, int>&);
