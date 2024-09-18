@@ -72,13 +72,14 @@ int main(int argc, char* argv[]) {
 
     DiGraph diGraph;
     BiedgedGraph biedgedGraph, diBiedgedGraph;
-    Gfa gfa;
+    Gfa gfa(threads);
     gfa.gfa2Graph(inputGfaFile, outputFolderPath, diGraph, biedgedGraph, diBiedgedGraph);
 	// diGraph.print();
 	// biedgedGraph.print();
 	// diBiedgedGraph.print();
 
 	Growth growth = Growth(outputFolderPath);
+	growth.numThreads = threads;
 	growth.statGrowth(inputGfaFile);
 
 	gfa.printDigraphInfo(outputFolderPath, diGraph);

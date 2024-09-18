@@ -26,11 +26,12 @@
 class Gfa {
     public:
         size_t fileSize;
+        int numThreads;
         int segmentNumber, linkNumber;
         int singleDirectionSegmentCount, biDirectionalSegmentCount;
         std::vector <std::vector <std::pair <int, char> > > path;
 
-        Gfa();
+        Gfa(int);
         ~Gfa();
 
         void gfa2Graph(const std::string&, const std::string&, DiGraph&, BiedgedGraph&, BiedgedGraph&);

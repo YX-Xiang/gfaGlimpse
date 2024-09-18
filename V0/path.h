@@ -29,6 +29,7 @@ class Coverage {
 class Growth {
     public:
         //const std::vector <std::vector <std::pair <int, char> > >& path;
+        int numThreads;
         std::string outputPath;
 
         Growth(const std::string&);

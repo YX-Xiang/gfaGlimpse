@@ -195,9 +195,13 @@ void Growth::statGrowth(const std::string& gfaFile) {
     std::string htmlFile = outputPath + "/histgrowth.html";
     std::string csvFile = outputPath + "/histgrowth.csv";
     std::string logFile = outputPath + "/histgrowth.log";
-    std::string commandHtml = "RUST_LOG=info panacus histgrowth -t4 -l 1,2,1,1,1 -q 0,0,1,0.5,0.1 -S -s " 
+    std::string commandHtml = "RUST_LOG=info panacus histgrowth -t"
+        + std::to_string(numThreads)
+        + " -l 1,2,1,1,1 -q 0,0,1,0.5,0.1 -S -s " 
         + path_file + " -c all -a -o html " + gfaFile + " > " + htmlFile + " 2> " + logFile;
-    std::string commandCsv = "RUST_LOG=info panacus histgrowth -t4 -l 1,2,1,1,1 -q 0,0,1,0.5,0.1 -S -s " 
+    std::string commandCsv = "RUST_LOG=info panacus histgrowth -t"
+        + std::to_string(numThreads)
+        + " -l 1,2,1,1,1 -q 0,0,1,0.5,0.1 -S -s " 
         + path_file + " -c all -a " + gfaFile + " > " + csvFile + " 2>> " + logFile;
     FILE* pipe1 = popen(commandHtml.c_str(), "r");
     FILE* pipe2 = popen(commandCsv.c_str(), "r");

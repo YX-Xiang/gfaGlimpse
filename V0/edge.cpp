@@ -1,9 +1,4 @@
 #include "edge.h"
-#include <iostream>
-#include <queue>
-#include <unordered_map>
-#include <utility>
-#include <vector>
 
 
 Edge::Edge() {
@@ -172,11 +167,33 @@ void Cycle::statCycle(const DiGraph& diGraph) {
         }
     }
 
-    // 可并行
-    for (auto v: diGraph.vertexVal) {
-        int beginVertex = v.first;
-        findCycleInDirected(beginVertex, vertexVal, edge);
+    // 并行
+    auto threadTask = [&](int startVertex) {
+        findCycleInDirected(startVertex, vertexVal, edge);
+    };
+
+    std::vector<std::thread> threads;
+
+    // 创建并分配线程，每个线程处理一个顶点的查找任务
+    for (int i = 0; i < numThreads && i < vertexVal.size(); ++i) {
+        threads.push_back(std::thread(threadTask, i));
     }
+
+    // 如果顶点数超过线程数，那么剩余顶点由线程池中的线程接着处理
+    for (int i = numThreads; i < vertexVal.size(); ++i) {
+        threads[i % numThreads].join();  // 等待某个线程完成
+        threads[i % numThreads] = std::thread(threadTask, i);  // 用这个线程处理新的顶点
+    }
+
+    // 等待所有线程完成任务
+    for (auto& th : threads) {
+        th.join();
+    }
+
+    // for (auto v: diGraph.vertexVal) {
+    //     int beginVertex = v.first;
+    //     findCycleInDirected(beginVertex, vertexVal, edge);
+    // }
 }
 
 
@@ -205,6 +222,7 @@ void Cycle::statCycle(const BiedgedGraph& biedgedGraph) {
 void Cycle::findCycleInDirected(int startVertex, const std::vector <int>& vertexVal, 
     const std::vector <std::set <int> >& edge) {
     int vertexNumber = vertexVal.size();
+    std::cout << startVertex << std::endl;
 
     // 标记这个点当前是否是死胡同
     std::vector <bool> blocked = std::vector <bool> (vertexNumber, 0);
@@ -240,9 +258,12 @@ void Cycle::findCycleInDirected(int startVertex, const std::vector <int>& vertex
             int nxtNode = *it;
             visited[nowNode] = nxtNode + 1;
             if (nxtNode == startVertex) {
-                cycleCount ++;
-                cycleLen[totalLength] ++;
-                minCycleLen = std::min(minCycleLen, totalLength);
+                {
+                    std::lock_guard<std::mutex> lock(mtx);
+                    cycleCount ++;
+                    cycleLen[totalLength] ++;
+                    minCycleLen = std::min(minCycleLen, totalLength);
+                }
 
                 for(auto p: path) {
                     boolCycle[p] = 1;

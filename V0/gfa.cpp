@@ -2,7 +2,8 @@
 #include <string>
 
 
-Gfa::Gfa() {
+Gfa::Gfa(int numThreads) {
+    numThreads = numThreads;
     segmentNumber = 0;
     linkNumber = 0;
     singleDirectionSegmentCount = 0;
@@ -349,6 +350,7 @@ void Gfa::printDigraphInfo(const std::string& outputFolderPath, DiGraph& diGraph
 	diConnectivity.SCC2Subgraph(diGraph, diSubgraphList);
 	// 只需要在上一步分离出的SCC中统计cycle相关指标，大大降低时间复杂度
 	Cycle cycle;
+    cycle.numThreads = numThreads;
 	cycle.work(diSubgraphList, edge.loopLen);
     edge.print2File(loopFile, 1);
 	cycle.print2File(cycleFile, edge.loopCount);

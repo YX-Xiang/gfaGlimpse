@@ -7,7 +7,7 @@ U50				109
 #start_ends		1
 #edges			18076
 #loops			0
-#cycles			91
-minimum_weight_cycle_without_loop	4
+#cycles			0
+minimum_weight_cycle_without_loop	-1
 #weak_connected_components			1
 #strongly_connected_components		13150
