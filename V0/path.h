@@ -11,9 +11,9 @@
 
 class Coverage {
     public:
-        const std::vector <std::vector <std::pair <int, char> > >& path;
+        const std::vector <std::vector <std::pair <long long, char> > >& path;
 
-        Coverage(const std::vector <std::vector <std::pair <int, char> > >&);
+        Coverage(const std::vector <std::vector <std::pair <long long, char> > >&);
         ~Coverage();
 
         void statCoverage(const DiGraph&);
@@ -21,8 +21,7 @@ class Coverage {
         void print2File(const std::string&, int);
 
     private:
-        std::vector <int> vertexCoverage, edgeCoverage;
-        std::vector <long long> bpCoverage;
+        std::vector <long long> vertexCoverage, edgeCoverage, bpCoverage;
 };
 
 

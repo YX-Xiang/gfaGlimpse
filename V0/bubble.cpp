@@ -3,24 +3,24 @@
 Bubble::Bubble() {
 	maxChainBp = 0;
 	maxChainBubbleCount = 0;
-	supperBubble = std::vector<std::vector<int>>();
-	simpleBubble = std::vector<std::vector<int>>();
-	insertion = std::vector<std::vector<int>>();
-	chainLength = std::unordered_map<long long, int>();
+	supperBubble = std::vector <std::vector<long long> >();
+	simpleBubble = std::vector <std::vector<long long> >();
+	insertion = std::vector <std::vector<long long> >();
+	chainLength = std::unordered_map <long long, long long>();
 	Bubbles = std::vector<bubble>();
-	bubble_siz = std::map<int, int>();
+	bubble_siz = std::map<long long, long long>();
 }
 
 Bubble::~Bubble() {}
 
-int id(int x, int di) { 
+long long Bubble::id(long long x, int di) { 
   	return (x << 1) - (1 - di);
 }
 
 
 // is_dibigraph 为 0 是 bidirected graph，为 1 是 directed biedged graph
-bool is_simple(int di, std::vector<int> &in, const BiedgedGraph &biedgedGraph, int is_dibigraph) {
-	int s, t, x, y;
+bool Bubble::is_simple(int di, std::vector<long long> &in, const BiedgedGraph &biedgedGraph, int is_dibigraph) {
+	long long s, t, x, y;
 	s = in[0];
 	t = in[3];
 	x = in[1];
@@ -45,29 +45,29 @@ bool is_simple(int di, std::vector<int> &in, const BiedgedGraph &biedgedGraph, i
 		}
 	}
 	
-	std::set<int> neis, neit;
+	std::set<long long> neis, neit;
 	if (is_dibigraph) {
 		for (auto [v, val] : biedgedGraph.edge[id(s, 0)]) {
 			if (val == 0) {
-				neis.insert((v + 1) / 2);
+				neis.insert((v + 1) >> 1);
 			}
 		}	
 		for (auto [v, val] : biedgedGraph.edge[id(t, 1)]) {
 			if (val == 0) {
-				neit.insert((v + 1) / 2);
+				neit.insert((v + 1) >> 1);
 			}
 		}
 	}
 
 	for (auto [v, val] : biedgedGraph.edge[id(s, 1)]) {
 		if (val == 0) {
-			neis.insert((v + 1) / 2);
+			neis.insert((v + 1) >> 1);
 		}
 	}
 		
 	for (auto [v, val] : biedgedGraph.edge[id(t, 0)]) {
 		if (val == 0) {
-			neit.insert((v + 1) / 2);
+			neit.insert((v + 1) >> 1);
 		}
 	}
 
@@ -78,7 +78,7 @@ bool is_simple(int di, std::vector<int> &in, const BiedgedGraph &biedgedGraph, i
  	// if(edges[s].count(t) || edges[t].count(s)) return 0;
 
   	// return 1;
-	std::vector<int> neignbor1, neignbor2;
+	std::vector<long long> neignbor1, neignbor2;
 	for (auto [v, val] : biedgedGraph.edge[id(x, 0)]) {
 		if (val == 0) {
 			neignbor1.push_back(v);
@@ -109,25 +109,25 @@ bool is_simple(int di, std::vector<int> &in, const BiedgedGraph &biedgedGraph, i
 	return 1;
 }
 
-bool is_insertion(int di, std::vector<int> &in, const BiedgedGraph &biedgedGraph) {
+bool is_insertion(int di, std::vector<long long> &in, const BiedgedGraph &biedgedGraph) {
 	// 可能差点细节（目前暂时没问题） 但没想到三个点的特殊情况还有什么
 	// 要么对比源码
 	return 1;
 }
 
-void Bubble::bfs(int s, int direction, const BiedgedGraph &biedgedGraph, int is_dibigraph) {
-	std::set<std::pair<int, int> > seen;
-	std::set<int> visited;
-	std::vector<int> in;
+void Bubble::bfs(long long s, int direction, const BiedgedGraph &biedgedGraph, int is_dibigraph) {
+	std::set<std::pair<long long, long long> > seen;
+	std::set<long long> visited;
+	std::vector<long long> in;
 	seen.insert({s, direction}); // s / 2
 
-	std::queue<std::pair<int, int>> q;
+	std::queue<std::pair<long long, int>> q;
 	q.push({s, direction}); // s / 2
 
 	while (q.size()) {
-		int u = q.front().first;
+		long long u = q.front().first;
 		int di = q.front().second;
-		int idu = id(u, di);
+		long long idu = id(u, di);
 		// std::cerr << "id:" << idu << std::endl;
 
 		q.pop();
@@ -163,28 +163,28 @@ void Bubble::bfs(int s, int direction, const BiedgedGraph &biedgedGraph, int is_
 			if (val != 0) {
 				continue; 
 			}
-			int nowdi = !(to & 1);
+			long long nowdi = !(to & 1);
 
 			if ((to + 1) / 2 == s) {
 				// its a loop
 				return;
 			}
 
-			std::vector<int> to_parent;
+			std::vector<long long> to_parent;
 			if (is_dibigraph == 0) {
 				for (auto &[fa, faV] : biedgedGraph.edge[to]) {
 					if (faV == 0) {
-						to_parent.push_back((fa + 1) / 2);
+						to_parent.push_back((fa + 1) >> 1);
 					}
 				}
 			} else {
 				for (auto &[fa, faV] : biedgedGraph.redge[to]) {
 					if (faV == 0) {
-						to_parent.push_back((fa + 1) / 2);
+						to_parent.push_back((fa + 1) >> 1);
 					}
 				}
 			}
-			seen.insert({(to + 1) / 2, 1 - nowdi});
+			seen.insert({(to + 1) >> 1, 1 - nowdi});
 
 			bool is_all_visited = 1;
 			for (auto &fa : to_parent) {
@@ -193,12 +193,12 @@ void Bubble::bfs(int s, int direction, const BiedgedGraph &biedgedGraph, int is_
 				}
 			}
 			if (is_all_visited) {
-				q.push({(to + 1) / 2, 1 - nowdi});
+				q.push({(to + 1) >> 1, 1 - nowdi});
 			}
 		}
 
 		if (q.size() == 1 && seen.size() == 1) {
-			int t = q.front().first;
+			long long t = q.front().first;
 			int nowdi = q.front().second;
 			q.pop();
 			in.push_back(t);
@@ -242,11 +242,11 @@ void Bubble::bfs(int s, int direction, const BiedgedGraph &biedgedGraph, int is_
 
 void Bubble::findBubble(const BiedgedGraph &biedgedGraph, int is_dibigraph) {
 	// 统计supperBubble，simpleBubble，nestedBubble和chainLen
-	int n = biedgedGraph.edge.size() / 2;
+	long long n = biedgedGraph.edge.size() / 2;
 
-	for (int i = 2; i <= n * 2; i += 2) {
+	for (long long i = 2; i <= n * 2; i += 2) {
 		//  std::cerr << "i:" << i << std::endl;
-		bfs((i + 1) / 2, 1 - i & 1, biedgedGraph, is_dibigraph);
+		bfs((i + 1) >> 1, 1 - i & 1, biedgedGraph, is_dibigraph);
 	}
 
 	// int mxdegree=0;
@@ -263,16 +263,16 @@ void Bubble::findBubble(const BiedgedGraph &biedgedGraph, int is_dibigraph) {
 	long long tmpChainLength = 0;
 
 	for (auto &p : Bubbles) {
-		int x = p.s;
-		int y = p.t;
+		long long x = p.s;
+		long long y = p.t;
 		is_bubble_s[x] = 1;
 
 		chainBubbleCount[y] = chainBubbleCount[x] + 1;
 		maxChainBubbleCount = std::max(maxChainBubbleCount, chainBubbleCount[y]);
 
-		int sum = 0;
+		long long sum = 0;
 		if (is_dibigraph == 0) {
-			for (int i = 1; i < p.inside.size(); i++) {
+			for (long long i = 1; i < p.inside.size(); i++) {
 				cnt[p.inside[i]]++;
 				sum += (*biedgedGraph.edge[p.inside[i] * 2].begin()).value; // 加 bubble 里的点的大小
 			}
@@ -286,7 +286,7 @@ void Bubble::findBubble(const BiedgedGraph &biedgedGraph, int is_dibigraph) {
 				sum += (*biedgedGraph.edge[x * 2].begin()).value; // 加这个 bubble 里面s的大小
 			}
 		} else {
-			for (int i = 1; i < p.inside.size(); i++) {
+			for (long long i = 1; i < p.inside.size(); i++) {
 				cnt[p.inside[i]]++;
 				if (biedgedGraph.edge[p.inside[i] * 2 - 1].size() &&
           			biedgedGraph.edge[p.inside[i] * 2 - 1].begin()->value != 0) {
@@ -319,9 +319,9 @@ void Bubble::findBubble(const BiedgedGraph &biedgedGraph, int is_dibigraph) {
 		chainLength[tmpChainLength] ++;
 	}
 
-	int tot_node = 0, tot_seq = 0, all_seqlen = 0;
+	long long tot_node = 0, tot_seq = 0, all_seqlen = 0;
 	if (is_dibigraph == 0) {
-		for (int i = 1; i <= n; i++) {
+		for (long long i = 1; i <= n; i++) {
 			all_seqlen += (*biedgedGraph.edge[i * 2].begin()).value;
 			if (cnt[i]) {
 				tot_node++;
@@ -332,7 +332,7 @@ void Bubble::findBubble(const BiedgedGraph &biedgedGraph, int is_dibigraph) {
 			}
 		}
 	} else {
-		for (int i = 1; i <= n; i++) {
+		for (long long i = 1; i <= n; i++) {
 			if (biedgedGraph.edge[i * 2 - 1].size() &&
 				biedgedGraph.edge[i * 2 - 1].begin()->value != 0) {
 					all_seqlen += biedgedGraph.edge[i * 2 - 1].begin()->value;

@@ -1,13 +1,10 @@
 #include "path.h"
-#include <cstdlib>
-#include <iostream>
-#include <string>
 
 
-Coverage::Coverage(const std::vector <std::vector <std::pair <int, char> > >& gfaPath): 
+Coverage::Coverage(const std::vector <std::vector <std::pair <long long, char> > >& gfaPath): 
     path(gfaPath) {
-        vertexCoverage = std::vector <int> (path.size() + 1, 0);
-        edgeCoverage = std::vector <int> (path.size() + 1, 0);
+        vertexCoverage = std::vector <long long> (path.size() + 1, 0);
+        edgeCoverage = std::vector <long long> (path.size() + 1, 0);
         bpCoverage = std::vector <long long> (path.size() + 1, 0);
 }
 
@@ -16,15 +13,15 @@ Coverage::~Coverage() {}
 
 
 void Coverage::statCoverage(const DiGraph& diGraph) {
-    int vertexMaxNumber = diGraph.edge.size();
+    long long vertexMaxNumber = diGraph.edge.size();
     std::vector <std::set <int> > vertexTravelledPathList = std::vector <std::set <int> > (vertexMaxNumber, std::set <int> ());
-    std::map <std::pair <std::pair <int, char>, std::pair <int, char> >, std::set <int> > edgeTravelledPathList;
+    std::map <std::pair <std::pair <long long, char>, std::pair <long long, char> >, std::set <int> > edgeTravelledPathList;
 
     int pathCount = path.size();
     for (int pathID = 0; pathID < pathCount; pathID ++) {
-        int pathSize = path[pathID].size();
-        for (int p = 0; p < pathSize; p ++) {
-            int id = path[pathID][p].first;
+        long long pathSize = path[pathID].size();
+        for (long long p = 0; p < pathSize; p ++) {
+            long long id = path[pathID][p].first;
             char direction = path[pathID][p].second;
             if (direction == '+') {
                 vertexTravelledPathList[(id << 1) - 1].insert(pathID);
@@ -41,7 +38,7 @@ void Coverage::statCoverage(const DiGraph& diGraph) {
         }
     }
 
-    for (int vertexID = 1; vertexID < vertexMaxNumber; vertexID ++) {
+    for (long long vertexID = 1; vertexID < vertexMaxNumber; vertexID ++) {
         //std::cout << vertexID << " " << vertexTravelledPathList[vertexID].size() << std::endl;
         if (diGraph.vertexVal.count(vertexID)) {
             vertexCoverage[vertexTravelledPathList[vertexID].size()] ++;
@@ -61,20 +58,20 @@ void Coverage::statCoverage(const DiGraph& diGraph) {
 
 
 void Coverage::statCoverage(const BiedgedGraph& biedgedGraph) {
-    int vertexMaxNumber = (biedgedGraph.vertexNumber >> 1) + 1;
+    long long vertexMaxNumber = (biedgedGraph.vertexNumber >> 1) + 1;
     std::vector <std::set <int> > vertexTravelledPathList = std::vector <std::set <int> > (vertexMaxNumber, std::set <int> ());
-    std::map <std::pair <std::pair <int, char>, std::pair <int, char> >, std::set <int> > edgeTravelledPathList;
+    std::map <std::pair <std::pair <long long, char>, std::pair <long long, char> >, std::set <int> > edgeTravelledPathList;
 
     int pathCount = path.size();
     for (int pathID = 0; pathID < pathCount; pathID ++) {
-        int pathSize = path[pathID].size();
-        for (int p = 0; p < pathSize; p++) {
-            int id = path[pathID][p].first;
+        long long pathSize = path[pathID].size();
+        for (long long p = 0; p < pathSize; p++) {
+            long long id = path[pathID][p].first;
             vertexTravelledPathList[id].insert(pathID);
 
             if (p) {
                 // 无向边统一转化为编号较小的节点在前的表示
-                std::pair <int, char> fi, se;
+                std::pair <long long, char> fi, se;
                 if (path[pathID][p - 1].first == path[pathID][p].first) {
                     if (path[pathID][p - 1].second == path[pathID][p].second) {
                         fi.first = se.first = path[pathID][p - 1].first;
@@ -110,7 +107,7 @@ void Coverage::statCoverage(const BiedgedGraph& biedgedGraph) {
         }
     }
 
-    for (int vertexID = 1; vertexID < vertexMaxNumber; vertexID ++) {
+    for (long long vertexID = 1; vertexID < vertexMaxNumber; vertexID ++) {
         // std::cout << vertexID << " " << vertexTravelledPathList[vertexID].size() << std::endl;
         vertexCoverage[vertexTravelledPathList[vertexID].size()] ++;
         bpCoverage[vertexTravelledPathList[vertexID].size()] += (biedgedGraph.edge[(vertexID << 1)].begin() -> value);

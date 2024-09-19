@@ -13,8 +13,8 @@ Edge::~Edge() {}
 
 
 void Edge::stat(const DiGraph& diGraph) {
-    int maxVertexNumber = diGraph.edge.size();
-    for (int vID = 1; vID < maxVertexNumber; vID ++) {
+    long long maxVertexNumber = diGraph.edge.size();
+    for (long long vID = 1; vID < maxVertexNumber; vID ++) {
         edgeCount += diGraph.edge[vID].size();
         if (diGraph.edge[vID].find(vID) != diGraph.edge[vID].end()) {
             loopCount ++;
@@ -29,8 +29,8 @@ void Edge::stat(const DiGraph& diGraph) {
 
 
 void Edge::stat(const BiedgedGraph& biedgedGraph) {
-    int maxVertexNumber = biedgedGraph.edge.size();
-    for (int vID = 1; vID < maxVertexNumber; vID ++) {
+    long long maxVertexNumber = biedgedGraph.edge.size();
+    for (long long vID = 1; vID < maxVertexNumber; vID ++) {
         linkEdgeCount += biedgedGraph.edge[vID].size() - 1;
         edgeCount += biedgedGraph.edge[vID].size();
         
@@ -149,7 +149,7 @@ void Cycle::work(std::vector <BiedgedGraph>& subgraphList, std::unordered_map <l
 
 void Cycle::statCycle(const DiGraph& diGraph) {
     int vertexMaxCount = diGraph.edge.size();
-    std::vector <int> vertexVal = std::vector <int> (vertexMaxCount, 0);
+    std::vector <long long> vertexVal = std::vector <long long> (vertexMaxCount, 0);
     for (int v = 1; v < vertexMaxCount; v ++) {
         if (diGraph.vertexVal.count(v)) {
             vertexVal[v] = diGraph.vertexVal.at(v);
@@ -193,18 +193,18 @@ void Cycle::statCycle(const DiGraph& diGraph) {
     }
 
     // for (auto v: diGraph.vertexVal) {
-    //     int beginVertex = v.first;
+    //     long long beginVertex = v.first;
     //     findCycleInDirected(beginVertex, vertexVal, edge);
     // }
 }
 
 
 void Cycle::statCycle(const BiedgedGraph& biedgedGraph) {
-    int vertexMaxCount = biedgedGraph.edge.size();
-    std::vector <int> vertexVal = std::vector <int> (vertexMaxCount, 0);
-    std::vector <std::set <std::pair<int, int> > > edgeVal = std::vector <std::set <std::pair<int, int> > > (vertexMaxCount, std::set <std::pair<int, int> >());
+    long long vertexMaxCount = biedgedGraph.edge.size();
+    std::vector <long long> vertexVal = std::vector <long long> (vertexMaxCount, 0);
+    std::vector <std::set <std::pair<int, long long> > > edgeVal = std::vector <std::set <std::pair<int, long long> > > (vertexMaxCount, std::set <std::pair<int, long long> >());
 
-    for (int v = 1; v < vertexMaxCount; v ++) {
+    for (long long v = 1; v < vertexMaxCount; v ++) {
         if (! biedgedGraph.edge[v].empty()) {
             for (auto e: biedgedGraph.edge[v]) {
                 if (e.to != v) {
@@ -221,7 +221,7 @@ void Cycle::statCycle(const BiedgedGraph& biedgedGraph) {
 }
 
 
-void Cycle::findCycleInDirected(int startVertex, const std::vector <int>& vertexVal, 
+void Cycle::findCycleInDirected(int startVertex, const std::vector <long long>& vertexVal, 
     const std::vector <std::set <int> >& edge) {
     int vertexNumber = vertexVal.size();
 
@@ -327,8 +327,8 @@ void Cycle::findCycleInDirected(int startVertex, const std::vector <int>& vertex
 // walk有特殊要求，要求必须以segment edge起始，以segment edge终止，且segment edge和link edge首尾相接
 // 为了加速，因为cycle的性质，以segment edge起始且以segment edge终止，可以等价看成以link edge起始，以link edge终止，因此这两种都看作有效的cycle。这样可以避免由于先遍历的点在link edge上而无法找到cycle。
 // 因为路径存在不同性质，因此在block时也要分为两个记号
-void Cycle::findCycleInBiedged(int startVertex, const std::vector <int>& vertexVal, 
-    const std::vector <std::set <std::pair<int, int> > >& edgeVal) {
+void Cycle::findCycleInBiedged(int startVertex, const std::vector <long long>& vertexVal, 
+    const std::vector <std::set <std::pair<int, long long> > >& edgeVal) {
     int vertexNumber = vertexVal.size();
 
     std::vector <int> visited = std::vector <int> (vertexNumber, startVertex);

@@ -1,5 +1,4 @@
 #include "vertex.h"
-#include <utility>
 
 
 Vertex::Vertex() {
@@ -14,9 +13,8 @@ Vertex::Vertex() {
 Vertex::~Vertex() {}
 
 
-std::pair<int, int> Vertex::calN50(std::vector<int>& vec, long long total) {
-    long long sum = 0;
-    int num  = 0;
+std::pair<long long, long long> Vertex::calN50(std::vector<long long>& vec, long long total) {
+    long long sum = 0, num  = 0;
     for (auto val: vec) {
         sum += val;
         num ++;
@@ -29,7 +27,7 @@ std::pair<int, int> Vertex::calN50(std::vector<int>& vec, long long total) {
 
 
 void Vertex::statVertex(const DiGraph& diGraph) {
-    std::vector<int> tmpN, tmpU;
+    std::vector<long long> tmpN, tmpU;
     for (auto v: diGraph.vertexVal) {
         //统计segment长度
         totalLen += v.second;
@@ -50,7 +48,7 @@ void Vertex::statVertex(const DiGraph& diGraph) {
     deadEnd = outDegreeDistribution[0];
     startEnd = inDegreeDistribution[0];
 
-    std::sort(tmpN.begin(), tmpN.end(), std::greater <int> () );
+    std::sort(tmpN.begin(), tmpN.end(), std::greater <long long> () );
     tmpU = tmpN;
 
     long long total = 0;
@@ -66,10 +64,10 @@ void Vertex::statVertex(const DiGraph& diGraph) {
 
 
 void Vertex::statVertex(const BiedgedGraph& biedgedGraph) {
-    std::vector<int> tmpN, tmpU;
+    std::vector<long long> tmpN, tmpU;
     // bidirected graph和biedged graph
     if (biedgedGraph.directed == 0) {
-        for (int vID = 1; vID <= biedgedGraph.vertexNumber; vID ++) {
+        for (long long vID = 1; vID <= biedgedGraph.vertexNumber; vID ++) {
             if (vID & 1) {
                 totalLen += biedgedGraph.edge[vID].begin() -> value;
                 tmpN.push_back(biedgedGraph.edge[vID].begin() -> value);
@@ -82,7 +80,7 @@ void Vertex::statVertex(const BiedgedGraph& biedgedGraph) {
             linkDegreeDistribution[biedgedGraph.edge[vID].size() - 1] ++;
         }
 
-        std::sort(tmpN.begin(), tmpN.end(), std::greater <int> () );
+        std::sort(tmpN.begin(), tmpN.end(), std::greater <long long> () );
         tmpU = tmpN;
         long long total = 0;
         auto last = std::unique(tmpU.begin(), tmpU.end());
@@ -95,11 +93,11 @@ void Vertex::statVertex(const BiedgedGraph& biedgedGraph) {
         U50 = calN50(tmpU, total).first;
 
     } else { //directed biedged graph
-        std::vector <int> segmentInDegree = std::vector <int> (biedgedGraph.vertexNumber + 1, 0);
-        std::vector <int> linkInDegree = std::vector <int> (biedgedGraph.vertexNumber + 1, 0);
+        std::vector <long long> segmentInDegree = std::vector <long long> (biedgedGraph.vertexNumber + 1, 0);
+        std::vector <long long> linkInDegree = std::vector <long long> (biedgedGraph.vertexNumber + 1, 0);
     
-        for (int vID = 1; vID <= biedgedGraph.vertexNumber; vID ++) {
-            int segmentOutDegree = 0, linkOutDegree = biedgedGraph.edge[vID].size();
+        for (long long vID = 1; vID <= biedgedGraph.vertexNumber; vID ++) {
+            long long segmentOutDegree = 0, linkOutDegree = biedgedGraph.edge[vID].size();
             for (auto e: biedgedGraph.edge[vID]) {
                 if (e.value) {
                     segmentInDegree[e.to] ++;
@@ -116,7 +114,7 @@ void Vertex::statVertex(const BiedgedGraph& biedgedGraph) {
             linkOutDegreeDistribution[linkOutDegree] ++;
         }
 
-        for (int vID = 1; vID <= biedgedGraph.vertexNumber; vID ++) {
+        for (long long vID = 1; vID <= biedgedGraph.vertexNumber; vID ++) {
             if (segmentInDegree[vID] + linkInDegree[vID] == 0) {
                 startEnd ++;
             }

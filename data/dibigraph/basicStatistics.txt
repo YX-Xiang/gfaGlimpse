@@ -1,11 +1,11 @@
-#vertices		26580
-#dead_ends		1
-#start_ends		2
-#edges			31366
-#loops			0
-#supperbubbles	305
-simple_bubbles	3963
-sequence_coverage_of_chains	99.9878%
-node_coverage_of_chains		99.0971%
-longest_chain_seq_wise		1024669 bp
-longest_chain_bubble_wise	3047 bubble(s)
+#vertices		35131872
+#dead_ends		70
+#start_ends		64
+#edges			41894817
+#loops			39
+#supperbubbles	386318
+simple_bubbles	4202877
+sequence_coverage_of_chains	87.2479%
+node_coverage_of_chains		97.8456%
+longest_chain_seq_wise		168572551 bp
+longest_chain_bubble_wise	247521 bubble(s)

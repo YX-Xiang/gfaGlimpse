@@ -13,8 +13,8 @@
 class Graph {
     public:
         long long vertexNumber;
-        std::map <long long, int> vertexVal;
-        std::map <int, int> map2RawGraph;
+        std::map <long long, long long> vertexVal;
+        std::map <long long, long long> map2RawGraph;
 
         Graph();
         ~Graph();
@@ -24,7 +24,7 @@ class Graph {
 class DiGraph: public Graph {
     public:
         std::vector <std::set <long long> > edge;
-        std::map <int, int> inDegree, outDegree;
+        std::map <long long, long long> inDegree, outDegree;
 
         DiGraph();
         ~DiGraph();
@@ -36,10 +36,10 @@ class DiGraph: public Graph {
 
 class Biedge {
     public:
-        int to, value;
+        long long to, value;
 
         Biedge();
-        Biedge(int, int);
+        Biedge(long long, long long);
         ~Biedge();
 
         bool operator<(const Biedge&) const;

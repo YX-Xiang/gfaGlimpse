@@ -28,9 +28,9 @@ class Gfa {
     public:
         size_t fileSize;
         int numThreads;
-        int segmentNumber, linkNumber;
-        int singleDirectionSegmentCount, biDirectionalSegmentCount;
-        std::vector <std::vector <std::pair <int, char> > > path;
+        long long segmentNumber, linkNumber;
+        long long singleDirectionSegmentCount, biDirectionalSegmentCount;
+        std::vector <std::vector <std::pair <long long, char> > > path;
 
         Gfa(int);
         ~Gfa();

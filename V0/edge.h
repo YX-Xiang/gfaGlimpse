@@ -53,8 +53,8 @@ class Cycle {
 
         void statCycle(const DiGraph&);
         void statCycle(const BiedgedGraph&);
-        void findCycleInDirected(int, const std::vector <int>&, const std::vector <std::set <int> >&);
-        void findCycleInBiedged(int, const std::vector <int>&, const std::vector <std::set <std::pair<int, int> > >&);
+        void findCycleInDirected(int, const std::vector <long long>&, const std::vector <std::set <int> >&);
+        void findCycleInBiedged(int, const std::vector <long long>&, const std::vector <std::set <std::pair<int, long long> > >&);
 };
 
 #endif

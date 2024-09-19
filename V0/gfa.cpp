@@ -6,7 +6,7 @@ Gfa::Gfa(int numThreads): numThreads(numThreads) {
     linkNumber = 0;
     singleDirectionSegmentCount = 0;
     biDirectionalSegmentCount = 0;
-    path = std::vector <std::vector <std::pair <int, char> > > ();
+    path = std::vector <std::vector <std::pair <long long, char> > > ();
 }
 
 
@@ -49,7 +49,7 @@ void Gfa::gfa2Graph (const std::string& gfaFile, const std::string& outputFolder
         std::getline(ifs, line);
         // std::cout << line << std::endl;
 
-        if(line[0] == 'S') {
+        if (line[0] == 'S') {
             segmentNumber ++;
 
             std::istringstream iss(line);
@@ -190,7 +190,7 @@ void Gfa::gfa2Graph (const std::string& gfaFile, const std::string& outputFolder
     // std::cout << diGraph.vertexNumber << " " << biedgedGraph.vertexNumber <<std::endl;
 
     // 统计segment的复用率
-    for (int seg = 1; seg <= segmentNumber; seg ++) {
+    for (long long seg = 1; seg <= segmentNumber; seg ++) {
         if (segmentDirection[seg].size() == 1) {
             singleDirectionSegmentCount ++;
         } else if (segmentDirection[seg].size() == 2) {
@@ -202,7 +202,7 @@ void Gfa::gfa2Graph (const std::string& gfaFile, const std::string& outputFolder
         std::istringstream iss(line);
         std::vector <std::string> tokens;
         std::string token;
-        std::vector <std::pair <int, char> > pathElement;
+        std::vector <std::pair <long long, char> > pathElement;
 
         while (std::getline(iss, token, '\t')) {
             tokens.push_back(token);
@@ -231,7 +231,7 @@ void Gfa::gfa2Graph (const std::string& gfaFile, const std::string& outputFolder
         std::istringstream iss(line);
         std::vector <std::string> tokens;
         std::string token;
-        std::vector <std::pair <int, char> > pathElement;
+        std::vector <std::pair <long long, char> > pathElement;
 
         while (std::getline(iss, token, '\t')) {
             tokens.push_back(token);

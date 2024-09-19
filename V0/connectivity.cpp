@@ -1,8 +1,7 @@
 #include "connectivity.h"
-#include <utility>
 
 
-Connectivity::Connectivity(int vertexNumber) {
+Connectivity::Connectivity(long long vertexNumber) {
     nodeNumber = vertexNumber;
     bridgeCount = 0;
     cutPointCount = 0;
@@ -18,30 +17,30 @@ Connectivity::~Connectivity() {}
 void Connectivity::initGraph() {
     sccNumber = 0;
     dfsNumber = 0;
-    graph = std::vector < std::set <int> > (nodeNumber + 1, std::set <int> ());
+    graph = std::vector < std::set <long long> > (nodeNumber + 1, std::set <long long> ());
     isCut = std::vector <bool> (nodeNumber + 1, 0);
-    bridge = std::set <std::pair<int, int>> ();
+    bridge = std::set <std::pair<long long, long long>> ();
     visNum = std::vector <long long> (nodeNumber + 1, 0);
     low = std::vector <long long> (nodeNumber + 1, 0);
     sccNum = std::vector <long long> (nodeNumber + 1, 0);
     scc = std::stack <long long> ();
-    sccList = std::vector < std::vector <int> > ();
+    sccList = std::vector < std::vector <long long> > ();
 }
 
 
-void Connectivity::tarjan(int fiNode) { 
+void Connectivity::tarjan(long long fiNode) { 
     int child = 0;
-    std::map < std::pair<int, int>, bool> visEdge;
-    std::unordered_map<int, int> fa;
+    std::map < std::pair<long long, long long>, bool> visEdge;
+    std::unordered_map<long long, long long> fa;
     visNum[fiNode] = low[fiNode] = ++ dfsNumber;
     scc.push(fiNode);
 
     // 手动模拟dfs栈
-    std::stack <int> dfsStack = std::stack <int> ();
+    std::stack <long long> dfsStack = std::stack <long long> ();
     dfsStack.push(fiNode);
 
     while (!dfsStack.empty()) {
-        int nowNode = dfsStack.top();
+        long long nowNode = dfsStack.top();
 
         for (auto nxtNode: graph[nowNode]) {
             if (! visNum[nxtNode]) {
@@ -75,10 +74,10 @@ void Connectivity::tarjan(int fiNode) {
             }
 
             if (visNum[nowNode] == low[nowNode]) {
-                std::vector <int> tmp = std::vector <int> ();
+                std::vector <long long> tmp = std::vector <long long> ();
                 sccNumber ++;
                 while (! scc.empty()) {
-                    int sccNode = scc.top();
+                    long long sccNode = scc.top();
                     scc.pop();
                     sccNum[sccNode] = sccNumber;
                     tmp.push_back(sccNode);
@@ -98,13 +97,13 @@ void Connectivity::tarjan(int fiNode) {
 void Connectivity::findComponent(const BiedgedGraph& biedgedGraph) {
     // 求 bidirected graph 中的割点（需要缩点）
     initGraph();
-    for (int vID = 1; vID <= nodeNumber; vID ++) {
+    for (long long vID = 1; vID <= nodeNumber; vID ++) {
         for (auto e: biedgedGraph.edge[vID]) {
-            int nxtNode = e.to;
+            long long nxtNode = e.to;
             graph[((vID + 1) >> 1)].insert(((nxtNode + 1) >> 1));
         }
     }
-    for (int vID = 1; vID <= (nodeNumber >> 1); vID ++) {
+    for (long long vID = 1; vID <= (nodeNumber >> 1); vID ++) {
         if (! visNum[vID]) {
             tarjan(vID);
         }
@@ -116,14 +115,14 @@ void Connectivity::findComponent(const BiedgedGraph& biedgedGraph) {
 
     // 求 biedged graph 中的桥和连通分量
     initGraph();
-    for (int vID = 1; vID <= nodeNumber; vID ++) {
+    for (long long vID = 1; vID <= nodeNumber; vID ++) {
         for (auto e: biedgedGraph.edge[vID]) {
-            int nxtNode = e.to;
+            long long nxtNode = e.to;
             graph[vID].insert(nxtNode);
         }
     }
 
-    for (int vID = 1; vID <= nodeNumber; vID ++) {
+    for (long long vID = 1; vID <= nodeNumber; vID ++) {
         if (! visNum[vID]) {
             tarjan(vID);
         }
@@ -134,10 +133,10 @@ void Connectivity::findComponent(const BiedgedGraph& biedgedGraph) {
 
 void Connectivity::edgeCompress(const DiGraph& diGraph) {
     reVertexMap = std::vector <long long> ((nodeNumber << 1) + 1, 0);
-    int newVertexID = 1;
+    long long newVertexID = 1;
 
     for (auto vertex: diGraph.vertexVal) {
-        int vID = vertex.first;
+        long long vID = vertex.first;
         vertexMap.push_back(vID);
         reVertexMap[vID] = newVertexID ++;
     }
@@ -147,14 +146,14 @@ void Connectivity::edgeCompress(const DiGraph& diGraph) {
 void Connectivity::findWCC(const DiGraph& diGraph) {
     initGraph();
     for (auto vertex: diGraph.vertexVal) {
-        int vID = vertex.first;
+        long long vID = vertex.first;
         for (auto e: diGraph.edge[vID]) {
             graph[reVertexMap[vID]].insert(reVertexMap[e]);
             graph[reVertexMap[e]].insert(reVertexMap[vID]);
         }
     }
 
-    for (int vID = 1; vID <= nodeNumber; vID ++) {
+    for (long long vID = 1; vID <= nodeNumber; vID ++) {
         if (! visNum[vID]) {
             tarjan(vID);
         }
@@ -166,13 +165,13 @@ void Connectivity::findWCC(const DiGraph& diGraph) {
 void Connectivity::findSCC(const DiGraph& diGraph) {
     initGraph();
     for (auto vertex: diGraph.vertexVal) {
-        int vID = vertex.first;
+        long long vID = vertex.first;
         for (auto e: diGraph.edge[vID]) {
             graph[reVertexMap[vID]].insert(reVertexMap[e]);
         }
     }
 
-    for (int vID = 1; vID <= nodeNumber; vID ++) {
+    for (long long vID = 1; vID <= nodeNumber; vID ++) {
         if (! visNum[vID]) {
             tarjan(vID);
         }
@@ -187,8 +186,8 @@ void Connectivity::SCC2Subgraph(const DiGraph& diGraph, std::vector <DiGraph>& s
 
         DiGraph subGraph = DiGraph();
         subGraph.edge = std::vector <std::set <long long> > (SCC.size() + 1, std::set <long long>());
-        std::map <int, int> nodeId = std::map <int, int>();
-        int id = 0;
+        std::map <long long, long long> nodeId = std::map <long long, long long>();
+        long long id = 0;
 
         for (auto node: SCC) {
             long long initNode = vertexMap[node];
@@ -225,8 +224,8 @@ void Connectivity::SCC2Subgraph(const BiedgedGraph& biedgedGraph, std::vector <B
 
         BiedgedGraph subGraph = BiedgedGraph();
         subGraph.edge = std::vector <std::set <Biedge> > (SCC.size() + 1, std::set <Biedge>());
-        std::map <int, int> nodeId = std::map <int, int>();
-        int id = 0;
+        std::map <long long, long long> nodeId = std::map <long long, long long>();
+        long long id = 0;
 
         for (auto node: SCC) {
             long long initNode = node;
@@ -237,7 +236,7 @@ void Connectivity::SCC2Subgraph(const BiedgedGraph& biedgedGraph, std::vector <B
                 }
 
                 for (auto nxt: biedgedGraph.edge[initNode]) {
-                    int nxtNode = nxt.to;
+                    long long nxtNode = nxt.to;
                     if (sccNum[nxtNode] == sccNum[node]) {
                         if (! nodeId.count(nxtNode)) {
                             nodeId[nxtNode] = ++ id;

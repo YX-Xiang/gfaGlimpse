@@ -3,8 +3,8 @@
 
 Graph::Graph() {
     vertexNumber = 0;
-    vertexVal = std::map <long long, int>();
-    map2RawGraph = std::map <int, int> ();
+    vertexVal = std::map <long long, long long>();
+    map2RawGraph = std::map <long long, long long> ();
 }
 
 
@@ -13,8 +13,8 @@ Graph::~Graph() {}
 
 DiGraph::DiGraph() {
     edge = std::vector <std::set <long long> > ();
-    inDegree = std::map <int, int> ();
-    outDegree = std::map <int, int> ();
+    inDegree = std::map <long long, long long> ();
+    outDegree = std::map <long long, long long> ();
 }
 
 
@@ -28,7 +28,7 @@ void DiGraph::vertexvalStat(const std::string& outputFile) {
         return;
     }
     
-    std::unordered_map <int,int> vertexvalMap = std::unordered_map <int,int> ();
+    std::unordered_map <long long, long long> vertexvalMap = std::unordered_map <long long, long long> ();
     for (auto v: vertexVal) {
         if (v.second) {
             vertexvalMap[v.second] ++;
@@ -46,8 +46,8 @@ void DiGraph::vertexvalStat(const std::string& outputFile) {
 
 void DiGraph::print() {
     std::cout << "Edges in the digraph:\n";
-    int vertexMaxNumber = edge.size();
-    for(int bid = 1; bid < vertexMaxNumber; bid ++) {
+    long long vertexMaxNumber = edge.size();
+    for(long long bid = 1; bid < vertexMaxNumber; bid ++) {
         for(auto eid: edge[bid]) {
             std::cout << bid << ":" << vertexVal.at(bid) << " -> " 
                 << eid << ":" << vertexVal.at(eid) << '\n';
@@ -61,7 +61,7 @@ Biedge::Biedge() {
 }
 
 
-Biedge::Biedge(int nTo, int nValue) {
+Biedge::Biedge(long long nTo, long long nValue) {
     to = nTo;
     value = nValue;
 }
@@ -93,7 +93,7 @@ void BiedgedGraph::edgevalStat(const std::string& outputFile) {
         return;
     }
     
-    std::unordered_map <int,int> edgevalMap = std::unordered_map <int,int> ();
+    std::unordered_map <long long, long long> edgevalMap = std::unordered_map <long long, long long> ();
     for (auto v: edge) {
         for (auto e: v) {
             if (e.value) {
@@ -113,8 +113,8 @@ void BiedgedGraph::edgevalStat(const std::string& outputFile) {
 
 void BiedgedGraph::print() {
     std::cout << "Edges in the bigraph:\n";
-    int vertexMaxNumber = edge.size();
-    for(int bid = 1; bid < vertexMaxNumber; bid ++) {
+    long long vertexMaxNumber = edge.size();
+    for(long long bid = 1; bid < vertexMaxNumber; bid ++) {
         for(auto eid: edge[bid]) {
             std::cout << bid << " -> " << eid.to << ": " << eid.value << '\n';
         }

@@ -10,10 +10,8 @@ void showUsage(std::string name) {
 	std::cerr << "Usage: " << name << " <option(s)> input_gfa_file\n"
 		<< "Options:\n"
 		<< "\t-h,\t\tShow this help message\n"
-		<< "\t-m,\t\tChoose the different mode (cycle(default)/path/scc/dominator/check)"
 		<< "\t-t,\t\tThe number of threads (default: 1)\n"
 		<< "\t-o,\t\tPath to output file (containing temporary file)\n"
-		<< "\t-f,\t\tFasta files to be compared\n"
 		<< std::endl;
 }
 
@@ -39,17 +37,6 @@ int main(int argc, char* argv[]) {
         if(strcmp(argv[i], "-h") == 0) {
 			showUsage(argv[0]);
 			return 0;
-		} else if (strcmp(argv[i], "-m") == 0) {
-			if (i + 1 < argc) {
-				inputMode = argv[++i];
-				if (inputMode != "cycle" && inputMode != "path" && inputMode != "scc" && inputMode != "dominator" && inputMode != "check") {
-					std::cerr << "Errors concerning the argument of the -m option." << std::endl;
-					return 1;
-				}
-			} else {
-				std::cerr << "-m option requires one argument." << std::endl;
-				return 1;
-			}  
 		} else if (strcmp(argv[i], "-t") == 0) {
 			if (i + 1 < argc) {
 				inputThread = argv[++i];

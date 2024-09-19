@@ -15,9 +15,9 @@
 class Connectivity {
     public:
         int ccCount, sccNumber, nodeNumber, bridgeCount, cutPointCount, sccCount, wccCount;
-        std::vector < std::vector <int> > sccList;
+        std::vector < std::vector <long long> > sccList;
 
-        Connectivity(int);
+        Connectivity(long long);
         ~Connectivity();
 
         void edgeCompress(const DiGraph&);
@@ -29,16 +29,16 @@ class Connectivity {
         void print2File(const std::string&);
 
     private:
-        std::vector < std::set <int> > graph;
+        std::vector < std::set <long long> > graph;
         std::vector <long long> vertexMap, reVertexMap;
-        int dfsNumber;
+        long long dfsNumber;
         std::vector <bool> isCut;
-        std::set <std::pair<int, int>> bridge;
+        std::set <std::pair<long long, long long>> bridge;
         std::vector <long long> visNum, low, sccNum;
         std::stack <long long> scc;
 
         void initGraph();
-        void tarjan(int);
+        void tarjan(long long);
 };
 
 #endif

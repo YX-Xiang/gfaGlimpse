@@ -9,31 +9,31 @@ g++ -Wall -Ofast -std=c++1z -fopenmp -o connectivity.o -c connectivity.cpp
 g++ -Wall -Ofast -std=c++1z -fopenmp -o graph.o -c graph.cpp
 g++ -Wall -Ofast -std=c++1z -fopenmp -o main.o -c main.cpp
 path.cpp: In member function ‘void Growth::statGrowth(const string&)’:
-path.cpp:206:11: warning: unused variable ‘pipe1’ [-Wunused-variable]
-  206 |     FILE* pipe1 = popen(commandHtml.c_str(), "r");
+path.cpp:203:11: warning: unused variable ‘pipe1’ [-Wunused-variable]
+  203 |     FILE* pipe1 = popen(commandHtml.c_str(), "r");
       |           ^~~~~
-bubble.cpp: In member function ‘void Bubble::bfs(int, int, const BiedgedGraph&, int)’:
+bubble.cpp: In member function ‘void Bubble::bfs(long long int, int, const BiedgedGraph&, int)’:
 bubble.cpp:202:8: warning: unused variable ‘nowdi’ [-Wunused-variable]
   202 |    int nowdi = q.front().second;
       |        ^~~~~
 bubble.cpp: In member function ‘void Bubble::findBubble(const BiedgedGraph&, int)’:
-bubble.cpp:249:22: warning: suggest parentheses around ‘-’ in operand of ‘&’ [-Wparentheses]
-  249 |   bfs((i + 1) / 2, 1 - i & 1, biedgedGraph, is_dibigraph);
-      |                    ~~^~~
-bubble.cpp:275:22: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
-  275 |    for (int i = 1; i < p.inside.size(); i++) {
-      |                    ~~^~~~~~~~~~~~~~~~~
-bubble.cpp:289:22: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
-  289 |    for (int i = 1; i < p.inside.size(); i++) {
-      |                    ~~^~~~~~~~~~~~~~~~~
+bubble.cpp:249:23: warning: suggest parentheses around ‘-’ in operand of ‘&’ [-Wparentheses]
+  249 |   bfs((i + 1) >> 1, 1 - i & 1, biedgedGraph, is_dibigraph);
+      |                     ~~^~~
+bubble.cpp:275:28: warning: comparison of integer expressions of different signedness: ‘long long int’ and ‘std::vector<long long int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  275 |    for (long long i = 1; i < p.inside.size(); i++) {
+      |                          ~~^~~~~~~~~~~~~~~~~
+bubble.cpp:289:28: warning: comparison of integer expressions of different signedness: ‘long long int’ and ‘std::vector<long long int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  289 |    for (long long i = 1; i < p.inside.size(); i++) {
+      |                          ~~^~~~~~~~~~~~~~~~~
 edge.cpp: In member function ‘void Cycle::statCycle(const DiGraph&)’:
-edge.cpp:178:41: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+edge.cpp:178:41: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<long long int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   178 |     for (int i = 0; i < numThreads && i < vertexVal.size(); ++i) {
       |                                       ~~^~~~~~~~~~~~~~~~~~
-edge.cpp:183:32: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+edge.cpp:183:32: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<long long int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   183 |     for (int i = numThreads; i < vertexVal.size(); ++i) {
       |                              ~~^~~~~~~~~~~~~~~~~~
-edge.cpp: In member function ‘void Cycle::findCycleInDirected(int, const std::vector<int>&, const std::vector<std::set<int> >&)’:
+edge.cpp: In member function ‘void Cycle::findCycleInDirected(int, const std::vector<long long int>&, const std::vector<std::set<int> >&)’:
 edge.cpp:317:21: warning: unused variable ‘preFinished’ [-Wunused-variable]
   317 |                 int preFinished = path.back();
       |                     ^~~~~~~~~~~

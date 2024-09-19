@@ -1,55 +1,54 @@
-[2024-09-19T09:37:08Z INFO  panacus::cli] running panacus on 16 threads
-[2024-09-19T09:37:08Z INFO  panacus::cli] constructing indexes for node/edge IDs, node lengths, and P/W lines..
-[2024-09-19T09:37:08Z INFO  panacus::cli] ..done; found 10 paths/walks and 13290 nodes 18076 edges
-[2024-09-19T09:37:08Z INFO  panacus::cli] loading data from group / subset / exclude files
-[2024-09-19T09:37:08Z INFO  panacus::abacus] loading coordinates from ../data/gfa/paths.haplotypes.txt
-[2024-09-19T09:37:08Z INFO  panacus::cli] loading graph from ../example/01_dm_pggb.gfa
-[2024-09-19T09:37:08Z INFO  panacus::abacus] parsing path + walk sequences
-[2024-09-19T09:37:08Z INFO  panacus::abacus] counting abacus entries..
-[2024-09-19T09:37:08Z INFO  panacus::cli] abacus has 10 path groups and 13291 countables
-[2024-09-19T09:37:08Z INFO  panacus::cli] loading graph from ../example/01_dm_pggb.gfa
-[2024-09-19T09:37:08Z INFO  panacus::abacus] parsing path + walk sequences
-[2024-09-19T09:37:08Z INFO  panacus::abacus] counting abacus entries..
-[2024-09-19T09:37:08Z INFO  panacus::cli] abacus has 10 path groups and 18077 countables
-[2024-09-19T09:37:08Z INFO  panacus::cli] constructing bp histogram..
-[2024-09-19T09:37:08Z INFO  panacus::cli] constructing node histogram..
-[2024-09-19T09:37:08Z INFO  panacus::cli] constructing histogram..
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
-[2024-09-19T09:37:08Z INFO  panacus::cli] reporting (hist-)growth table
-[2024-09-19T09:37:08Z INFO  panacus] done; time elapsed: 81.914225ms 
-
-[2024-09-19T09:37:08Z INFO  panacus::cli] abacus has 10 path groups and 18077 countables
-[2024-09-19T09:37:08Z INFO  panacus::cli] constructing bp histogram..
-[2024-09-19T09:37:08Z INFO  panacus::cli] constructing node histogram..
-[2024-09-19T09:37:08Z INFO  panacus::cli] constructing histogram..
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
-[2024-09-19T09:37:08Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
-[2024-09-19T09:37:08Z INFO  panacus::cli] reporting (hist-)growth table
-[2024-09-19T09:37:08Z INFO  panacus] done; time elapsed: 83.222678ms 
+[2024-09-19T14:03:06Z INFO  panacus::cli] running panacus on 16 threads
+[2024-09-19T14:03:06Z INFO  panacus::cli] constructing indexes for node/edge IDs, node lengths, and P/W lines..
+[2024-09-19T14:04:05Z INFO  panacus::cli] ..done; found 69 paths/walks and 17565936 nodes 24328848 edges
+[2024-09-19T14:04:05Z INFO  panacus::cli] loading data from group / subset / exclude files
+[2024-09-19T14:04:05Z INFO  panacus::abacus] loading coordinates from ../data/gfa/paths.haplotypes.txt
+[2024-09-19T14:04:05Z INFO  panacus::cli] loading graph from /home/yxxiang/data/gfaGlimpse/benchmark/data/07_hs_pggb.gfa
+[2024-09-19T14:04:05Z INFO  panacus::abacus] parsing path + walk sequences
+[2024-09-19T14:04:13Z INFO  panacus::abacus] counting abacus entries..
+[2024-09-19T14:04:13Z INFO  panacus::cli] abacus has 69 path groups and 17565937 countables
+[2024-09-19T14:04:13Z INFO  panacus::cli] loading graph from /home/yxxiang/data/gfaGlimpse/benchmark/data/07_hs_pggb.gfa
+[2024-09-19T14:04:13Z INFO  panacus::abacus] parsing path + walk sequences
+[2024-09-19T14:04:56Z INFO  panacus::abacus] counting abacus entries..
+[2024-09-19T14:04:57Z INFO  panacus::cli] abacus has 69 path groups and 24328849 countables
+[2024-09-19T14:04:57Z INFO  panacus::cli] constructing bp histogram..
+[2024-09-19T14:04:57Z INFO  panacus::cli] constructing node histogram..
+[2024-09-19T14:04:57Z INFO  panacus::cli] constructing histogram..
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
+[2024-09-19T14:04:57Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
+[2024-09-19T14:04:57Z INFO  panacus::cli] reporting (hist-)growth table
+[2024-09-19T14:05:18Z INFO  panacus] done; time elapsed: 131.646844763s 
+024-09-19T14:04:59Z INFO  panacus::cli] abacus has 69 path groups and 24328849 countables
+[2024-09-19T14:04:59Z INFO  panacus::cli] constructing bp histogram..
+[2024-09-19T14:04:59Z INFO  panacus::cli] constructing node histogram..
+[2024-09-19T14:04:59Z INFO  panacus::cli] constructing histogram..
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 1R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.1R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 2A and quorum >= 0R
+[2024-09-19T14:04:59Z INFO  panacus::hist] calculating growth for coverage >= 1A and quorum >= 0.5R
+[2024-09-19T14:04:59Z INFO  panacus::cli] reporting (hist-)growth table
+[2024-09-19T14:05:21Z INFO  panacus] done; time elapsed: 134.685547563s 
