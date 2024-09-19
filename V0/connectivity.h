@@ -38,7 +38,7 @@ class Connectivity {
         std::stack <long long> scc;
 
         void initGraph();
-        void tarjan(long long);
+        void tarjan(long long, int);
 };
 
 #endif

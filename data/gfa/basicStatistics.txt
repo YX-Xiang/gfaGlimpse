@@ -1,6 +1,6 @@
-file_size	4.42GB
-#segments	17565936
-#links		24328848
-#paths		69
-#single_direction_segment			17565903
-#bidirectional_direction_segment	33
+file_size	2.40MB
+#segments	13290
+#links		18076
+#paths		10
+#single_direction_segment			13290
+#bidirectional_direction_segment	0
