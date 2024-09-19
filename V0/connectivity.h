@@ -2,6 +2,7 @@
 #define __CONNECTIVITY_H__
 
 
+#include <cstdint>
 #include <set>
 #include <stack>
 #include <unordered_map>
@@ -13,7 +14,7 @@
 
 class Connectivity {
     public:
-        int sccNumber, nodeNumber, bridgeCount, cutPointCount, sccCount, wccCount;
+        int ccCount, sccNumber, nodeNumber, bridgeCount, cutPointCount, sccCount, wccCount;
         std::vector < std::vector <int> > sccList;
 
         Connectivity(int);
@@ -37,7 +38,7 @@ class Connectivity {
         std::stack <long long> scc;
 
         void initGraph();
-        void tarjan(int, int);
+        void tarjan(int);
 };
 
 #endif

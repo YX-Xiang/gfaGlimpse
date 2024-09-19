@@ -1,0 +1,16 @@
+#vertices					13290
+total_length				1505317
+N50							764
+L50							436
+U50							1080
+#dead_ends					2
+#edges						18076
+#loops						0
+#cuts						4267
+#connected_components		1
+#supperbubbles				305
+simple_bubbles				3963
+sequence_coverage_of_chains	99.9878%
+node_coverage_of_chains		99.0971%
+longest_chain_seq_wise		1024669 bp
+longest_chain_bubble_wise	3047 bubble(s)

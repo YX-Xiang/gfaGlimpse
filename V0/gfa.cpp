@@ -1,5 +1,4 @@
 #include "gfa.h"
-#include <string>
 
 
 Gfa::Gfa(int numThreads): numThreads(numThreads) {
@@ -341,17 +340,29 @@ void Gfa::printDigraphInfo(const std::string& outputFolderPath, DiGraph& diGraph
     Edge edge;
     edge.stat(diGraph);
 
+    auto start = std::chrono::system_clock::now();
+
     Connectivity diConnectivity = Connectivity(diGraph.vertexNumber);
 	std::vector <DiGraph> diSubgraphList = std::vector <DiGraph>();
 	diConnectivity.edgeCompress(diGraph);
     diConnectivity.findWCC(diGraph);
 	diConnectivity.findSCC(diGraph);
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end - start;
+    // std::cout << "求连通分量的时间: " << elapsed_seconds.count() << " 秒" << std::endl;
+
 	diConnectivity.SCC2Subgraph(diGraph, diSubgraphList);
 	// 只需要在上一步分离出的SCC中统计cycle相关指标，大大降低时间复杂度
+    start = std::chrono::system_clock::now();
+
 	Cycle cycle(numThreads);
 	cycle.work(diSubgraphList, edge.loopLen);
     edge.print2File(loopFile, 1);
 	cycle.print2File(cycleFile, edge.loopCount);
+
+    end = std::chrono::system_clock::now();
+    elapsed_seconds = end - start;
+    // std::cout << "求 cycle 的程序运行时间: " << elapsed_seconds.count() << " 秒" << std::endl;
 
     basicStatistics << "#edges\t\t\t" << edge.edgeCount 
         << "\n#loops\t\t\t" << edge.loopCount
@@ -400,12 +411,12 @@ void Gfa::printBigraphInfo(const std::string& outputFolderPath, BiedgedGraph& bi
     std::string bidirectedDegreeFile = bidirectedGraphFolder + "/degree.txt";
     std::string bidirectedCoverageFile = bidirectedGraphFolder + "/coverage.txt";
 
-    bidirectedBasic << "#vertices\t\t" << (biedgedGraph.vertexNumber >> 1)
-        << "\ntotal_length\t" << vertex.totalLen 
-        << "\nN50\t\t\t\t" << vertex.N50 
-        << "\nL50\t\t\t\t" << vertex.L50 
-        << "\nU50\t\t\t\t" << vertex.U50 
-        << "\n#dead_ends\t\t" << vertex.deadEnd << "\n";
+    bidirectedBasic << "#vertices\t\t\t\t\t" << (biedgedGraph.vertexNumber >> 1)
+        << "\ntotal_length\t\t\t\t" << vertex.totalLen 
+        << "\nN50\t\t\t\t\t\t\t" << vertex.N50 
+        << "\nL50\t\t\t\t\t\t\t" << vertex.L50 
+        << "\nU50\t\t\t\t\t\t\t" << vertex.U50 
+        << "\n#dead_ends\t\t\t\t\t" << vertex.deadEnd << "\n";
     biedgedGraph.edgevalStat(bidirectedVertexvalFile);
     vertex.printDegree2File(bidirectedDegreeFile);
 
@@ -420,21 +431,28 @@ void Gfa::printBigraphInfo(const std::string& outputFolderPath, BiedgedGraph& bi
     edge.stat(biedgedGraph);
     edge.print2File(bidirectedLoopFile, 2);
 
-    bidirectedBasic << "#edges\t\t\t" << edge.linkEdgeCount 
-        << "\n#loops\t\t\t" << edge.loopCount << "\n";
+    bidirectedBasic << "#edges\t\t\t\t\t\t" << edge.linkEdgeCount 
+        << "\n#loops\t\t\t\t\t\t" << edge.loopCount << "\n";
 
     // **输出 subgraph 的信息**
     Connectivity biConnectivity = Connectivity(biedgedGraph.vertexNumber);
 	std::vector <BiedgedGraph> diBiSubgraphList = std::vector <BiedgedGraph>();
 	biConnectivity.findComponent(biedgedGraph);
 
+    auto start = std::chrono::system_clock::now();
+
     Bubble biBubble;
 	biBubble.findBubble(biedgedGraph, 0);
     biBubble.print2File(bidirectedGraphFolder);
 
-    bidirectedBasic << "#cuts\t\t\t" << biConnectivity.cutPointCount 
-        << "\n#supperbubbles\t" << biBubble.superBubbleCount
-        << "\nsimple_bubbles\t" << biBubble.simpleBubbleCount 
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end - start;
+    // std::cout << "bidirected graph 求 bubble 的程序运行时间: " << elapsed_seconds.count() << " 秒" << std::endl;
+
+    bidirectedBasic << "#cuts\t\t\t\t\t\t" << biConnectivity.cutPointCount 
+        << "\n#connected_components\t\t" << biConnectivity.ccCount 
+        << "\n#supperbubbles\t\t\t\t" << biBubble.superBubbleCount
+        << "\nsimple_bubbles\t\t\t\t" << biBubble.simpleBubbleCount 
         << std::fixed << std::setprecision(4)
         << "\nsequence_coverage_of_chains\t" << biBubble.seqCoverage << "%"
         << "\nnode_coverage_of_chains\t\t" << biBubble.nodeCoverage << "%"
@@ -509,9 +527,15 @@ void Gfa::printDibigraphInfo(const std::string& outputFolderPath, BiedgedGraph& 
         << "\n#loops\t\t\t" << edge.loopCount << "\n";
 
     // **输出 subgraph 的信息**
+    auto start = std::chrono::system_clock::now();
+
     Bubble dibiBubble;
 	dibiBubble.findBubble(dibiedgedGraph, 1);
     dibiBubble.print2File(dibigraphFolder);
+
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end - start;
+    // std::cout << "directed biedged graph 上求 bubble 的程序运行时间: " << elapsed_seconds.count() << " 秒" << std::endl;
 
     basicStatistics << "#supperbubbles\t" << dibiBubble.superBubbleCount
         << "\nsimple_bubbles\t" << dibiBubble.simpleBubbleCount 

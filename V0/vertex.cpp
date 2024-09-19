@@ -14,13 +14,13 @@ Vertex::Vertex() {
 Vertex::~Vertex() {}
 
 
-std::pair<int, int> Vertex::calN50(std::vector<int>& vec) {
+std::pair<int, int> Vertex::calN50(std::vector<int>& vec, long long total) {
     long long sum = 0;
     int num  = 0;
     for (auto val: vec) {
         sum += val;
         num ++;
-        if ((sum << 1) >= totalLen) {
+        if ((sum << 1) >= total) {
             return {val, num};
         }
     }
@@ -52,11 +52,16 @@ void Vertex::statVertex(const DiGraph& diGraph) {
 
     std::sort(tmpN.begin(), tmpN.end(), std::greater <int> () );
     tmpU = tmpN;
+
+    long long total = 0;
     auto last = std::unique(tmpU.begin(), tmpU.end());
     tmpU.erase(last, tmpU.end());
+    for (auto x: tmpU) {
+        total += x;
+    }
 
-    std::tie(N50, L50) = calN50(tmpN);
-    U50 = calN50(tmpU).first;
+    std::tie(N50, L50) = calN50(tmpN, totalLen);
+    U50 = calN50(tmpU, total).first;
 }
 
 
@@ -79,11 +84,15 @@ void Vertex::statVertex(const BiedgedGraph& biedgedGraph) {
 
         std::sort(tmpN.begin(), tmpN.end(), std::greater <int> () );
         tmpU = tmpN;
+        long long total = 0;
         auto last = std::unique(tmpU.begin(), tmpU.end());
         tmpU.erase(last, tmpU.end());
+        for (auto x: tmpU) {
+            total += x;
+        }
 
-        std::tie(N50, L50) = calN50(tmpN);
-        U50 = calN50(tmpU).first;
+        std::tie(N50, L50) = calN50(tmpN, totalLen);
+        U50 = calN50(tmpU, total).first;
 
     } else { //directed biedged graph
         std::vector <int> segmentInDegree = std::vector <int> (biedgedGraph.vertexNumber + 1, 0);

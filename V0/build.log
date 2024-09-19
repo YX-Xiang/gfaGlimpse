@@ -13,18 +13,18 @@ path.cpp:206:11: warning: unused variable ‘pipe1’ [-Wunused-variable]
   206 |     FILE* pipe1 = popen(commandHtml.c_str(), "r");
       |           ^~~~~
 bubble.cpp: In member function ‘void Bubble::bfs(int, int, const BiedgedGraph&, int)’:
-bubble.cpp:197:8: warning: unused variable ‘nowdi’ [-Wunused-variable]
-  197 |    int nowdi = q.front().second;
+bubble.cpp:202:8: warning: unused variable ‘nowdi’ [-Wunused-variable]
+  202 |    int nowdi = q.front().second;
       |        ^~~~~
 bubble.cpp: In member function ‘void Bubble::findBubble(const BiedgedGraph&, int)’:
-bubble.cpp:244:22: warning: suggest parentheses around ‘-’ in operand of ‘&’ [-Wparentheses]
-  244 |   bfs((i + 1) / 2, 1 - i & 1, biedgedGraph, is_dibigraph);
+bubble.cpp:249:22: warning: suggest parentheses around ‘-’ in operand of ‘&’ [-Wparentheses]
+  249 |   bfs((i + 1) / 2, 1 - i & 1, biedgedGraph, is_dibigraph);
       |                    ~~^~~
-bubble.cpp:270:22: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
-  270 |    for (int i = 1; i < p.inside.size(); i++) {
+bubble.cpp:275:22: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  275 |    for (int i = 1; i < p.inside.size(); i++) {
       |                    ~~^~~~~~~~~~~~~~~~~
-bubble.cpp:284:22: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
-  284 |    for (int i = 1; i < p.inside.size(); i++) {
+bubble.cpp:289:22: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  289 |    for (int i = 1; i < p.inside.size(); i++) {
       |                    ~~^~~~~~~~~~~~~~~~~
 edge.cpp: In member function ‘void Cycle::statCycle(const DiGraph&)’:
 edge.cpp:178:41: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]

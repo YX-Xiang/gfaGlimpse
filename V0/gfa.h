@@ -14,6 +14,7 @@
 #include <vector>
 #include <iomanip>
 #include <filesystem>
+#include <chrono>
 
 #include "graph.h"
 #include "vertex.h"

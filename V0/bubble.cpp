@@ -131,6 +131,11 @@ void Bubble::bfs(int s, int direction, const BiedgedGraph &biedgedGraph, int is_
 		// std::cerr << "id:" << idu << std::endl;
 
 		q.pop();
+
+		if (visited.count(u)) {
+			break;
+		}
+
 		visited.insert(u);
 		in.push_back(u);
 

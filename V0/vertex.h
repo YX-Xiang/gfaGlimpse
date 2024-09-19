@@ -33,7 +33,7 @@ class Vertex {
         std::unordered_map <int, int> bidirectedDegreeDistribution, linkDegreeDistribution;
         std::unordered_map <int, int> segmentInDegreeDistribution, segmentOutDegreeDistribution, linkInDegreeDistribution, linkOutDegreeDistribution;
 
-        std::pair<int, int> calN50(std::vector <int>&);
+        std::pair<int, int> calN50(std::vector <int>&, long long);
 };
 
 
